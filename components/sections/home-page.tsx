@@ -10,9 +10,10 @@ const leftContent = {
 export default function HomePage() {
   return (
     <section>
-      <h1 className="font-league-gothic m-0" style={{ fontSize: vw(110) }}>{leftContent.name.toUpperCase()}</h1>
-      <h3 className="font-league-gothic m-0" style={{ fontSize: vw(40) }}>{leftContent.title} | {leftContent.course}</h3>
-      <p className="font-rajdhani" style={{ fontSize: vw(32) }}>{leftContent.description}</p>
+      <h1 className="font-league-gothic m-0" style={{ fontSize: vw(64) }}>HOME</h1>
+      <p className="font-rajdhani" style={{ fontSize: vw(24) }}>
+        Home content coming soon.
+      </p>  
     </section>
   );
 }

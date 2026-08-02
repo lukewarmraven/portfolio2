@@ -20,8 +20,8 @@ export default function NavSections({ active, onSelect }: NavSectionsProps) {
     <nav>
       {sections.map((item) => (
         <a
-          className={`font-rajdhani no-underline cursor-pointer transition-all duration-500 ease-in-out ${
-            active === item.id ? "text-black font-semibold" : "text-black/40 font-normal"
+          className={`font-rajdhani no-underline cursor-pointer transition-all duration-300 ease-in-out ${
+            active === item.id ? "text-black font-semibold" : "text-black font-normal"
           }`}
           style={{fontSize: vw(32)}}
           key={item.id}
