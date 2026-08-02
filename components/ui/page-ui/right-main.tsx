@@ -1,6 +1,16 @@
+import { vw } from "@/lib/utils";
+
 export default function RightMain({ children }: { children?: React.ReactNode }) {
   return (
-    <div className="absolute right-[12.67vw] top-[22.47vh] bottom-0 w-[36.75vw]">
+    <div
+      className="no-scrollbar"
+      style={{
+        width: vw(635),
+        height: "100%",
+        overflowY: "auto",
+        scrollSnapType: "y mandatory",
+      }}
+    >
       {children}
     </div>
   );

@@ -4,3 +4,16 @@
   --font-league-gothic: "League Gothic", sans-serif;
   --font-rajdhani: "Rajdhani", sans-serif;
 }
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+:root {
+  --figma-scale-w: 0.74;
+  --figma-scale-h: 0.64;
+}

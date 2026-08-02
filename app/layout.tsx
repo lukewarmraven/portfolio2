@@ -24,7 +24,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                var w = document.documentElement;
+                function update() {
+                  w.style.setProperty('--figma-scale-w', (window.innerWidth / 1728).toFixed(4));
+                  w.style.setProperty('--figma-scale-h', (window.innerHeight / 1117).toFixed(4));
+                }
+                update();
+                window.addEventListener('resize', update);
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className={`${leagueGothic.variable} ${rajdhani.variable}`}>
         {children}
       </body>
