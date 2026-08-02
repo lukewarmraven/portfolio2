@@ -68,8 +68,8 @@ export default function Home() {
       <LeftMain>
         <section>
           <div className="">
-            <h1 className="font-league-gothic m-0 p-0" style={{ fontSize: vw(110) }}>{leftContent.name.toUpperCase()}</h1>
-            <h3 className="font-league-gothic m-0 relative top-[-24]" style={{ fontSize: vw(40) }}>{leftContent.title} | {leftContent.course}</h3>
+            <h1 className="font-league-gothic m-0 p-0 leading-[0.7]" style={{ fontSize: vw(110) }}>{leftContent.name.toUpperCase()}</h1>
+            <h3 className="font-league-gothic m-0" style={{ fontSize: vw(40) }}>{leftContent.title} | {leftContent.course}</h3>
           </div>
           <p className="font-rajdhani" style={{ fontSize: vw(32) }}>{leftContent.description}</p>
         </section>

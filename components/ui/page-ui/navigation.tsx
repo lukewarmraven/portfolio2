@@ -1,3 +1,5 @@
+import { vw } from "@/lib/utils";
+
 export const sections = [
   { id: "home", label: "01 HOME" },
   { id: "experience", label: "02 EXPERIENCE" },
@@ -18,9 +20,10 @@ export default function NavSections({ active, onSelect }: NavSectionsProps) {
     <nav>
       {sections.map((item) => (
         <a
-          className={`font-rajdhani no-underline cursor-pointer ${
-            active === item.id ? "text-black" : "text-black/40"
+          className={`font-rajdhani no-underline cursor-pointer transition-all duration-500 ease-in-out ${
+            active === item.id ? "text-black font-semibold" : "text-black/40 font-normal"
           }`}
+          style={{fontSize: vw(32)}}
           key={item.id}
           onClick={(e) => {
             e.preventDefault();
