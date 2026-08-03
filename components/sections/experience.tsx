@@ -11,6 +11,7 @@ import {
 
 const PLACEHOLDER_CARDS = [
   {
+    category: "experience",
     title: "Senior Frontend Engineer",
     description: "Acme Corp. — 2023 to Present",
     content:
@@ -18,6 +19,7 @@ const PLACEHOLDER_CARDS = [
     footer: "React · Next.js · TypeScript · Tailwind",
   },
   {
+    category: "experience",
     title: "Full Stack Developer",
     description: "StartupXYZ — 2021 to 2023",
     content:
@@ -25,6 +27,7 @@ const PLACEHOLDER_CARDS = [
     footer: "Node.js · PostgreSQL · WebSocket · AWS",
   },
   {
+    category: "experience",
     title: "UI/UX Developer",
     description: "DesignLab Inc. — 2019 to 2021",
     content:
@@ -32,6 +35,7 @@ const PLACEHOLDER_CARDS = [
     footer: "Figma · Storybook · Accessibility · CSS",
   },
   {
+    category: "education",
     title: "IT Intern",
     description: "Polytechnic University of the Philippines — 2018",
     content:
@@ -39,6 +43,7 @@ const PLACEHOLDER_CARDS = [
     footer: "PHP · MySQL · JavaScript · Bootstrap",
   },
   {
+    category: "experience",
     title: "Freelance Web Developer",
     description: "Self-employed — 2017 to 2019",
     content:
@@ -46,6 +51,7 @@ const PLACEHOLDER_CARDS = [
     footer: "WordPress · PHP · jQuery · SCSS",
   },
   {
+    category: "education",
     title: "Open Source Contributor",
     description: "Various Projects — 2016 to Present",
     content:
@@ -53,6 +59,7 @@ const PLACEHOLDER_CARDS = [
     footer: "React · Node.js · GitHub · CI/CD",
   },
   {
+    category: "education",
     title: "Campus Tech Lead",
     description: "PUP Student Organization — 2015 to 2017",
     content:
@@ -63,7 +70,13 @@ const PLACEHOLDER_CARDS = [
 
 export default function Experience() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [showExperience, setShowExperience] = useState(true);
+  const [showEducation, setShowEducation] = useState(true);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const filteredCards = PLACEHOLDER_CARDS.filter(
+    (c) => (c.category === "experience" && showExperience) || (c.category === "education" && showEducation),
+  );
 
   // Scroll the opened card into view after expand animation starts
   useEffect(() => {
@@ -112,7 +125,19 @@ export default function Experience() {
         className="font-league-gothic m-0"
         style={{ fontSize: vw(64) }}
       >
-        EXPERIENCE
+        <span
+          onClick={() => setShowExperience((v) => (v && !showEducation ? true : !v))}
+          style={{ cursor: "pointer", color: showExperience ? "inherit" : "var(--color-muted-foreground)" }}
+        >
+          EXPERIENCE
+        </span>
+        {/* <span style={{ color: "var(--color-muted-foreground)" }}>/ </span> */}
+        <span
+          onClick={() => setShowEducation((v) => (v && !showExperience ? true : !v))}
+          style={{ cursor: "pointer", color: showEducation ? "inherit" : "var(--color-muted-foreground)" }}
+        >
+          / EDUCATION
+        </span>
       </h1>
 
       <div
@@ -122,7 +147,7 @@ export default function Experience() {
         style={{ overflowY: "auto", flex: "1 1 0", minHeight: 0 }}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: vw(16) }}>
-          {PLACEHOLDER_CARDS.map((item, i) => (
+          {filteredCards.map((item, i) => (
             <Card
               key={item.title}
               ref={(el) => { cardRefs.current[i] = el; }}
