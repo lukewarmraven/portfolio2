@@ -3,6 +3,16 @@
 @theme {
   --font-league-gothic: "League Gothic", sans-serif;
   --font-rajdhani: "Rajdhani", sans-serif;
+
+  /* Card colors */
+  --color-card: #ffffff;
+  --color-card-foreground: #111111;
+  --color-muted-foreground: #6b6b6b;
+  --color-border: rgba(0, 0, 0, 0.06);
+
+  /* Card shadows */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 2px 4px rgba(0, 0, 0, 0.04), 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
 .no-scrollbar {
