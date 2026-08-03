@@ -29,6 +29,8 @@ interface CardProps extends ComponentProps<"div"> {
   onOpenChange?: (open: boolean) => void;
   /** Set to false to disable expand/collapse entirely (static card). */
   collapsible?: boolean;
+  /** Show a graph-paper grid that fades from right to left. */
+  grid?: boolean;
 }
 
 const Card = forwardRef<HTMLDivElement, CardProps>(
@@ -40,6 +42,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
       open: controlledOpen,
       onOpenChange,
       collapsible = true,
+      grid = false,
       children,
       ...props
     },
@@ -115,6 +118,26 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
           }}
           {...props}
         >
+          {/* Graph-paper grid — spreads when card is open */}
+          {grid && (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 transition-[mask] duration-300 ease-out"
+              style={{
+                backgroundImage: [
+                  `linear-gradient(rgba(0,0,0,0.12) 1px, transparent 1px)`,
+                  `linear-gradient(90deg, rgba(0,0,0,0.12) 1px, transparent 1px)`,
+                ].join(", "),
+                backgroundSize: `${vw(24)} ${vw(24)}`,
+                maskImage: isOpen
+                  ? "linear-gradient(to top left, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.45) 18%, transparent 42%)"
+                  : "linear-gradient(to top left, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.45) 10%, transparent 30%)",
+                WebkitMaskImage: isOpen
+                  ? "linear-gradient(to top left, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.45) 18%, transparent 42%)"
+                  : "linear-gradient(to top left, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.45) 10%, transparent 30%)",
+              }}
+            />
+          )}
           {/* Spotlight glow overlay */}
           <div
             aria-hidden

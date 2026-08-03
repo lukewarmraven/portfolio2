@@ -126,6 +126,7 @@ export default function Experience() {
             <Card
               key={item.title}
               ref={(el) => { cardRefs.current[i] = el; }}
+              grid
               open={openIndex === i}
               onOpenChange={(open) => setOpenIndex(open ? i : null)}
             >
