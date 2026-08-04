@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { vw } from "@/lib/utils";
 
 export interface PopupCarouselItem {
@@ -80,6 +80,23 @@ export default function PopupCarousel({
     return () => el.removeEventListener("wheel", handler);
   }, [step, total]);
 
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleMouseEnter = useCallback((i: number) => {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    hoverTimer.current = setTimeout(() => setExpandedIndex(i), 3000);
+  }, []);
+
+  const cancelHover = useCallback(() => {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    hoverTimer.current = null;
+  }, []);
+
+  const closeExpanded = useCallback(() => {
+    setExpandedIndex(null);
+  }, []);
+
   const handleClick = useCallback(
     (index: number) => {
       if (index !== currentIndex) goTo(index);
@@ -101,17 +118,16 @@ export default function PopupCarousel({
   if (total === 0) return null;
 
   return (
-    <div
-      ref={containerRef}
-      className={className}
-      style={{
-        position: "relative",
-        overflow: "hidden",
-        flex: "1 1 0",
-        minHeight: 0,
-        cursor: "grab",
-      }}
-    >
+    <div className={className} style={{ position: "relative", flex: "1 1 0", minHeight: 0 }}>
+      <div
+        ref={containerRef}
+        style={{
+          position: "absolute",
+          inset: 0,
+          overflow: "hidden",
+          cursor: "grab",
+        }}
+      >
       {items.map((item, i) => {
         const offset = i - currentIndex;
         const isCurrent = offset === 0;
@@ -126,6 +142,8 @@ export default function PopupCarousel({
           <div
             key={i}
             onClick={() => handleClick(i)}
+            onMouseEnter={isCurrent ? () => handleMouseEnter(i) : undefined}
+            onMouseLeave={isCurrent ? cancelHover : undefined}
             style={{
               position: "absolute",
               top,
@@ -188,6 +206,37 @@ export default function PopupCarousel({
               ? "-- Scroll for more --"
               : "— End —"}
           </span>
+        </div>
+      )}
+    </div>
+
+      {/* ── Expanded full-image overlay (outside overflow-hidden) ── */}
+      {expandedIndex !== null && (
+        <div
+          onMouseEnter={cancelHover}
+          onMouseLeave={closeExpanded}
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: total + 20,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(0,0,0,0.5)",
+            borderRadius: vw(16),
+          }}
+        >
+          <img
+            src={items[expandedIndex].image}
+            alt={items[expandedIndex].title}
+            draggable={false}
+            style={{
+              maxWidth: "90%",
+              maxHeight: "90%",
+              borderRadius: vw(12),
+              boxShadow: "0 8px 48px rgba(0,0,0,0.3)",
+            }}
+          />
         </div>
       )}
     </div>
