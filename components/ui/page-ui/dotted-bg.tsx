@@ -58,6 +58,9 @@ import { useEffect, useRef } from "react";
  * ║  MAX_OFFSET          px — hard cap on how far a dot can travel from its  ║
  * ║                       home cell. Keeps the grid legible.                 ║
  * ║                                                                          ║
+ * ║  FLOAT_AMPLITUDE     px/frame² — gentle idle drift so dots never sit     ║
+ * ║                       completely still. 0 = off, 0.02–0.05 = subtle.     ║
+ * ║                                                                          ║
  * ║  DPR_CAP             Caps devicePixelRatio for the canvas backing store. ║
  * ║                       2 ≈ visually identical to 3 at ¼ the fill cost.    ║
  * ║                                                                          ║
@@ -94,6 +97,10 @@ const MAX_SPEED = 40;
 /** px — hard cap on distance from home. Keeps the grid readable.          */
 const MAX_OFFSET = 50;
 
+/** px/frame² — gentle idle drift so dots float instead of sitting flat.
+ *  0 = no float, 0.02 = subtle, 0.05 = noticeable wobble.                  */
+const FLOAT_AMPLITUDE = 0.04;
+
 /** Caps devicePixelRatio on the backing store. 2 ≈ 3 visually at ¼ cost.  */
 const DPR_CAP = 2;
 
@@ -124,6 +131,7 @@ export default function DottedBg() {
     let rafId = 0;
     let cssW = 0;
     let cssH = 0;
+    let frame = 0; // frame counter for float animation
 
     // Cursor position in canvas-local CSS pixels.
     // -- clientX / clientY are viewport-relative.
@@ -197,22 +205,30 @@ export default function DottedBg() {
         d.vx += (d.homeX - d.x) * SPRING_K;
         d.vy += (d.homeY - d.y) * SPRING_K;
 
-        // 3) Damp velocity.
+        // 3) Float — gentle idle drift so dots don't sit flat.
+        //    Each dot has a unique phase offset so neighbours drift
+        //    independently, creating an organic micro-motion.
+        const t = frame * 0.008;
+        const phase = i * 2.399;
+        d.vx += Math.sin(t * 1.3 + phase) * FLOAT_AMPLITUDE;
+        d.vy += Math.cos(t * 1.7 + phase) * FLOAT_AMPLITUDE;
+
+        // 4) Damp velocity.
         d.vx *= 1 - DAMPING;
         d.vy *= 1 - DAMPING;
 
-        // 4) Speed clamp.
+        // 5) Speed clamp.
         const speed = Math.hypot(d.vx, d.vy);
         if (speed > MAX_SPEED) {
           d.vx = (d.vx / speed) * MAX_SPEED;
           d.vy = (d.vy / speed) * MAX_SPEED;
         }
 
-        // 5) Integrate position.
+        // 6) Integrate position.
         d.x += d.vx;
         d.y += d.vy;
 
-        // 6) Offset clamp.
+        // 7) Offset clamp.
         const ox = d.x - d.homeX;
         const oy = d.y - d.homeY;
         const offset = Math.hypot(ox, oy);
@@ -225,6 +241,7 @@ export default function DottedBg() {
         ctx!.fillRect(d.x, d.y, DOT_SIZE, DOT_SIZE);
       }
 
+      frame++;
       rafId = requestAnimationFrame(step);
     }
 
