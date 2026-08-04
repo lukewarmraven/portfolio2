@@ -194,7 +194,7 @@ export default function Experience() {
                 className="font-rajdhani text-muted-foreground"
                 style={{ fontSize: vw(32), position: "relative", top: 20 }}
               >
-                {scrollState === "more" ? "-- Scroll for more --" : "— You're all caught up —"}
+                {scrollState === "more" ? "-- Scroll for more --" : "— End —"}
               </span>
             </div>
           )}

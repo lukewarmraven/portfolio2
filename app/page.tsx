@@ -11,6 +11,7 @@ import Projects from "@/components/sections/projects";
 import Seminars from "@/components/sections/seminars";
 import Contact from "@/components/sections/contact";
 import Socials from "@/components/ui/page-ui/socials";
+import DottedBg from "@/components/ui/page-ui/dotted-bg";
 
 const SECTION_COMPONENTS: Record<SectionId, () => React.JSX.Element> = {
   home: HomePage,
@@ -62,10 +63,12 @@ export default function Home() {
   }, []);
 
   return (
-    <div
-      className="flex justify-center items-stretch h-screen overflow-hidden"
-      style={{ gap: vw(20) }}
-    >
+    <>
+      <DottedBg />
+      <div
+        className="flex justify-center items-stretch h-screen overflow-hidden"
+        style={{ gap: vw(20) }}
+      >
       <LeftMain>
         <section className="flex flex-col" style={{gap: vw(46)}}>
           <div>
@@ -89,5 +92,6 @@ export default function Home() {
         })}
       </RightMain>
     </div>
+    </>
   );
 }
