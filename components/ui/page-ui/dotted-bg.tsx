@@ -66,24 +66,24 @@ import { useEffect, useRef } from "react";
 
 /* ---- visual ------------------------------------------------------------ */
 
-const DOT_COLOR = "rgba(17, 17, 17, 0.8)";
+const DOT_COLOR = "rgba(17, 17, 17, 0.6)";
 
 /** px — width & height of each square dot. 1 = crisp single-pixel dot.    */
 const DOT_SIZE = 1;
 
 /** px between dot centres in the grid. 20–40 = good density.              */
-const DOT_GAP = 28;
+const DOT_GAP = 15;
 
 /* ---- behaviour --------------------------------------------------------- */
 
 /** px — dots within this distance of the cursor get pushed. 80–200.       */
-const REPULSION_RADIUS = 120;
+const REPULSION_RADIUS = 75;
 
 /** Raw push force at the cursor centre (px/frame²). 30–60 is good.        */
-const REPULSION_STRENGTH = 40;
+const REPULSION_STRENGTH = 50;
 
 /** 0–1 spring stiffness pulling dots back home. 0.04–0.10 snappy.         */
-const SPRING_K = 0.06;
+const SPRING_K = 0.02;
 
 /** 0–1 velocity retained each frame. 0.10–0.20 → gentle settle.           */
 const DAMPING = 0.15;
@@ -92,7 +92,7 @@ const DAMPING = 0.15;
 const MAX_SPEED = 40;
 
 /** px — hard cap on distance from home. Keeps the grid readable.          */
-const MAX_OFFSET = 70;
+const MAX_OFFSET = 50;
 
 /** Caps devicePixelRatio on the backing store. 2 ≈ 3 visually at ¼ cost.  */
 const DPR_CAP = 2;
