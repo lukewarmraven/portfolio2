@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { vw } from "@/lib/utils";
 import PopupCarousel, {
   type PopupCarouselItem,
@@ -37,6 +38,8 @@ const PROJECTS: PopupCarouselItem[] = [
 ];
 
 export default function Projects() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   return (
     <section
       className="flex flex-col"
@@ -49,7 +52,27 @@ export default function Projects() {
         PROJECTS
       </h1>
 
-      <PopupCarousel items={PROJECTS} />
+      {/* ── Current project info ── */}
+      <div style={{ textAlign: "center" }}>
+        <h3
+          className="font-league-gothic m-0"
+          style={{ fontSize: vw(40), lineHeight: 0.9 }}
+        >
+          {PROJECTS[currentIndex].title}
+        </h3>
+        <p
+          className="font-rajdhani m-0 text-muted-foreground"
+          style={{ fontSize: vw(24), lineHeight: 1.1, marginTop: vw(4) }}
+        >
+          {PROJECTS[currentIndex].description}
+        </p>
+      </div>
+
+      <PopupCarousel
+        items={PROJECTS}
+        currentIndex={currentIndex}
+        onCurrentChange={setCurrentIndex}
+      />
     </section>
   );
 }

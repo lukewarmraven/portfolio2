@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useCallback, useRef, useEffect } from "react";
 import { vw } from "@/lib/utils";
 
 export interface PopupCarouselItem {
@@ -11,6 +11,8 @@ export interface PopupCarouselItem {
 
 interface PopupCarouselProps {
   items: PopupCarouselItem[];
+  currentIndex: number;
+  onCurrentChange: (index: number) => void;
   className?: string;
 }
 
@@ -19,10 +21,15 @@ const SPREAD_X = 36;
 /** Wheel debounce in ms — prevents rapid-fire scrolling. */
 const WHEEL_DEBOUNCE = 500;
 
-export default function PopupCarousel({ items, className }: PopupCarouselProps) {
+export default function PopupCarousel({
+  items,
+  currentIndex,
+  onCurrentChange,
+  className,
+}: PopupCarouselProps) {
   const total = items.length;
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const currentIndexRef = useRef(currentIndex);
+  const currentRef = useRef(currentIndex);
+  currentRef.current = currentIndex;
   const containerRef = useRef<HTMLDivElement>(null);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const canNavigate = useRef(true);
@@ -30,10 +37,9 @@ export default function PopupCarousel({ items, className }: PopupCarouselProps) 
   const goTo = useCallback(
     (index: number) => {
       const clamped = Math.max(0, Math.min(total - 1, index));
-      currentIndexRef.current = clamped;
-      setCurrentIndex(clamped);
+      onCurrentChange(clamped);
     },
-    [total],
+    [total, onCurrentChange],
   );
 
   const step = useCallback(
@@ -45,14 +51,11 @@ export default function PopupCarousel({ items, className }: PopupCarouselProps) 
         canNavigate.current = true;
         debounceTimer.current = null;
       }, WHEEL_DEBOUNCE);
-      setCurrentIndex((prev) => {
-        const next = prev + dir;
-        const clamped = Math.max(0, Math.min(total - 1, next));
-        currentIndexRef.current = clamped;
-        return clamped;
-      });
+      const next = currentRef.current + dir;
+      const clamped = Math.max(0, Math.min(total - 1, next));
+      onCurrentChange(clamped);
     },
-    [total],
+    [total, onCurrentChange],
   );
 
   // ── Native wheel listener — blocks scroll only when navigation is possible ──
@@ -64,11 +67,8 @@ export default function PopupCarousel({ items, className }: PopupCarouselProps) 
       if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
 
       const dir = e.deltaY > 0 ? 1 : -1;
-      const next = currentIndexRef.current + dir;
+      const next = currentRef.current + dir;
 
-      // Only block the scroll if we can actually navigate in that direction.
-      // At boundaries (start scrolling up, end scrolling down), let the event
-      // pass through so RightMain can take over.
       if (next >= 0 && next < total) {
         e.preventDefault();
         e.stopPropagation();
@@ -87,11 +87,10 @@ export default function PopupCarousel({ items, className }: PopupCarouselProps) 
     [currentIndex, goTo],
   );
 
-  /** z-index: current on top, prev items front of pile, next items behind in pile. */
   const getZIndex = (offset: number) => {
     if (offset === 0) return total + 1;
-    if (offset < 0) return total + offset; // -1→total-1, -2→total-2 (front of pile)
-    return total - offset - total; // +1→0, +2→1 (back of pile, behind)
+    if (offset < 0) return total + offset;
+    return total - offset - total;
   };
 
   const getOpacity = (offset: number) => {
@@ -117,8 +116,7 @@ export default function PopupCarousel({ items, className }: PopupCarouselProps) 
         const offset = i - currentIndex;
         const isCurrent = offset === 0;
 
-        // Current: elevated; Non-current: bottom pile, spread horizontally
-        const top = isCurrent ? "10%" : "87%";
+        const top = isCurrent ? "10%" : "78%";
         const left = isCurrent
           ? "50%"
           : `calc(50% + ${vw(offset * SPREAD_X)})`;
@@ -150,53 +148,48 @@ export default function PopupCarousel({ items, className }: PopupCarouselProps) 
               draggable={false}
               style={{
                 display: "block",
-                height: isCurrent ? vw(540) : "auto",
+                height: isCurrent ? vw(450) : "auto",
                 width: isCurrent ? "auto" : "100%",
                 maxWidth: isCurrent ? "none" : "100%",
                 borderRadius: vw(16),
                 boxShadow: isCurrent
-                  ? "0 8px 48px rgba(0,0,0,0.18)"
-                  : "0 1px 8px rgba(0,0,0,0.1)",
+                  ? "0 4px 24px rgba(0,0,0,0.25), 0 12px 48px rgba(0,0,0,0.15)"
+                  : "0 2px 8px rgba(0,0,0,0.18), 0 4px 16px rgba(0,0,0,0.08)",
                 transition: "box-shadow 0.55s ease",
               }}
             />
-            {/* Text overlay — only on current */}
-            <div
-              style={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                padding: vw(24),
-                paddingTop: vw(56),
-                background:
-                  "linear-gradient(transparent, rgba(0,0,0,0.7) 40%)",
-                borderRadius: `0 0 ${vw(16)} ${vw(16)}`,
-                opacity: isCurrent ? 1 : 0,
-                transition: "opacity 0.35s ease",
-                pointerEvents: "none",
-              }}
-            >
-              <h3
-                className="font-league-gothic m-0"
-                style={{ fontSize: vw(32), color: "#fff" }}
-              >
-                {item.title}
-              </h3>
-              <p
-                className="font-rajdhani m-0"
-                style={{
-                  fontSize: vw(18),
-                  color: "rgba(255,255,255,0.8)",
-                  marginTop: vw(4),
-                }}
-              >
-                {item.description}
-              </p>
-            </div>
           </div>
         );
       })}
+
+      {/* ── Scroll indicator ── */}
+      {total > 1 && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            display: "flex",
+            justifyContent: "center",
+            padding: vw(32),
+            paddingBottom: vw(32),
+            background:
+              "linear-gradient(transparent, var(--color-card, #fff) 60%)",
+            pointerEvents: "none",
+            zIndex: total + 2,
+          }}
+        >
+          <span
+            className="font-rajdhani text-muted-foreground"
+            style={{ fontSize: vw(32), position: "relative", top: 20 }}
+          >
+            {currentIndex < total - 1
+              ? "-- Scroll for more --"
+              : "— End —"}
+          </span>
+        </div>
+      )}
     </div>
   );
 }
