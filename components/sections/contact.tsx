@@ -1,10 +1,25 @@
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { vw } from "@/lib/utils";
 import CallingCard from "@/components/ui/reusable-ui/CallingCard";
 import Image from "next/image";
 
 export default function Contact() {
   const [flipped, setFlipped] = useState(false);
+  const [showQR, setShowQR] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [cardRect, setCardRect] = useState<DOMRect | null>(null);
+
+  // Snapshot card position when QR preview opens
+  useEffect(() => {
+    if (showQR && cardRef.current) {
+      setCardRect(cardRef.current.getBoundingClientRect());
+    } else {
+      setCardRect(null);
+    }
+  }, [showQR]);
+
+  const closeQR = useCallback(() => setShowQR(false), []);
 
   return (
     <section
@@ -19,10 +34,11 @@ export default function Contact() {
         className="flex flex-col items-center justify-center"
         style={{ flex: "1 1 0", minHeight: 0 }}
       >
-        <CallingCard
-            onFlipChange={setFlipped}
-            style={{ width: vw(580), height: vw(348) }}
-            front={
+        <div ref={cardRef} style={{ position: "relative" }}>
+            <CallingCard
+              onFlipChange={setFlipped}
+              style={{ width: vw(580), height: vw(348) }}
+              front={
               <div className="relative h-full w-full">
                 <Image
                   src="/assets/contacts/Front Card 2.png"
@@ -45,6 +61,7 @@ export default function Contact() {
               </div>
             }
           />
+        </div>
 
           {/* ── Action buttons ── */}
           <div
@@ -53,6 +70,7 @@ export default function Contact() {
               justifyContent: "center",
               gap: vw(12),
               marginTop: vw(24),
+              visibility: flipped ? "visible" : "hidden",
             }}
           >
             <a
@@ -78,6 +96,7 @@ export default function Contact() {
             </a>
 
             <button
+              onClick={() => setShowQR((v) => !v)}
               aria-label="View QR code"
               className="group/qr border border-border hover:border-foreground/30 hover:bg-foreground/5 flex items-center justify-center transition-colors duration-300"
               style={{
@@ -114,6 +133,43 @@ export default function Contact() {
             {flipped ? "— Click to view front side —" : "— Click to view back side —"}
           </span>
         </div>
+
+        {/* ── QR overlay (ported to body) ── */}
+        {showQR && cardRect &&
+          createPortal(
+            <div
+              onClick={closeQR}
+              style={{
+                position: "fixed",
+                inset: 0,
+                zIndex: 9999,
+                background: "rgba(0,0,0,0.45)",
+                cursor: "pointer",
+              }}
+            >
+              <Image
+                src="/assets/contacts/portfolio_qr.png"
+                alt="Portfolio QR code"
+                width={300}
+                height={300}
+                style={{
+                  position: "fixed",
+                  left: cardRect.left + cardRect.width / 2,
+                  top: cardRect.top + cardRect.height / 2,
+                  width: vw(300),
+                  height: vw(300),
+                  transform: "translate(-50%, -50%) scale(1.4)",
+                  transformOrigin: "center center",
+                  borderRadius: vw(16),
+                  boxShadow:
+                    "0 8px 48px rgba(0,0,0,0.35), 0 16px 64px rgba(0,0,0,0.2)",
+                  background: "white",
+                  padding: vw(16),
+                }}
+              />
+            </div>,
+            document.body,
+          )}
     </section>
   );
 }
