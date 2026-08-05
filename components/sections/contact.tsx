@@ -41,7 +41,7 @@ export default function Contact() {
               front={
               <div className="relative h-full w-full">
                 <Image
-                  src="/assets/contacts/Front Card 2.png"
+                  src="/assets/contacts/Quinto-FrontCard.png"
                   alt="Contact card front"
                   fill
                   className="rounded-[inherit] object-cover"
@@ -52,7 +52,7 @@ export default function Contact() {
             back={
               <div className="relative h-full w-full">
                 <Image
-                  src="/assets/contacts/Back Card 2.png"
+                  src="/assets/contacts/Quinto-BackCard.png"
                   alt="Contact card back"
                   fill
                   className="rounded-[inherit] object-cover"
