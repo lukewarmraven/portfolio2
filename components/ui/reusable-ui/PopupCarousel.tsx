@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { vw } from "@/lib/utils";
 
 export interface PopupCarouselItem {
@@ -33,6 +34,8 @@ export default function PopupCarousel({
   const containerRef = useRef<HTMLDivElement>(null);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const canNavigate = useRef(true);
+  const currentImageRef = useRef<HTMLImageElement | null>(null);
+  const [imageRect, setImageRect] = useState<DOMRect | null>(null);
 
   const goTo = useCallback(
     (index: number) => {
@@ -96,6 +99,15 @@ export default function PopupCarousel({
   const closeExpanded = useCallback(() => {
     setExpandedIndex(null);
   }, []);
+
+  // Snapshot image screen position when preview opens
+  useEffect(() => {
+    if (expandedIndex !== null && currentImageRef.current) {
+      setImageRect(currentImageRef.current.getBoundingClientRect());
+    } else {
+      setImageRect(null);
+    }
+  }, [expandedIndex]);
 
   const handleClick = useCallback(
     (index: number) => {
@@ -161,6 +173,7 @@ export default function PopupCarousel({
             aria-label={item.title}
           >
             <img
+              ref={isCurrent ? currentImageRef : undefined}
               src={item.image}
               alt={item.title}
               draggable={false}
@@ -210,35 +223,43 @@ export default function PopupCarousel({
       )}
     </div>
 
-      {/* ── Expanded full-image overlay (outside overflow-hidden) ── */}
-      {expandedIndex !== null && (
-        <div
-          onMouseEnter={cancelHover}
-          onMouseLeave={closeExpanded}
-          style={{
-            position: "absolute",
-            inset: 0,
-            zIndex: total + 20,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "rgba(0,0,0,0.5)",
-            borderRadius: vw(16),
-          }}
-        >
-          <img
-            src={items[expandedIndex].image}
-            alt={items[expandedIndex].title}
-            draggable={false}
-            style={{
-              maxWidth: "90%",
-              maxHeight: "90%",
-              borderRadius: vw(12),
-              boxShadow: "0 8px 48px rgba(0,0,0,0.3)",
-            }}
-          />
-        </div>
-      )}
+      {/* ── Expanded full-image overlay (ported to body to escape container clipping) ── */}
+      {expandedIndex !== null && imageRect !== null &&
+        (() => {
+          const isPortrait = imageRect.height > imageRect.width;
+          const scale = isPortrait ? 1.35 : 1;
+          return createPortal(
+            <div
+              onMouseEnter={cancelHover}
+              onMouseLeave={closeExpanded}
+              style={{
+                position: "fixed",
+                left: imageRect.left,
+                top: imageRect.top,
+                width: imageRect.width,
+                height: imageRect.height,
+                zIndex: 9999,
+                transform: `scale(${scale})`,
+                transformOrigin: "center center",
+              }}
+            >
+              <img
+                src={items[expandedIndex].image}
+                alt={items[expandedIndex].title}
+                draggable={false}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: vw(16),
+                  boxShadow:
+                    "0 8px 48px rgba(0,0,0,0.35), 0 16px 64px rgba(0,0,0,0.2)",
+                }}
+              />
+            </div>,
+            document.body
+          );
+        })()}
     </div>
   );
 }
