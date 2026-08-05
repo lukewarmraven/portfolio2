@@ -43,13 +43,11 @@ export default function Socials() {
             key={s.name}
             onClick={copyEmail}
             className="font-rajdhani border-none bg-transparent cursor-pointer p-0 text-black hover:text-black"
-            style={{ fontSize: vw(32), overflow: "hidden", position: "relative", display: "inline-block", height: "1.1em", width: "4em" }}
+            style={{ fontSize: vw(32), display: "grid", overflow: "hidden" }}
           >
             <span
               style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
+                gridArea: "1 / 1",
                 transform: copied ? "translateY(100%)" : "translateY(0)",
                 opacity: copied ? 0 : 1,
                 transition: "transform 0.3s ease, opacity 0.3s ease",
@@ -59,9 +57,7 @@ export default function Socials() {
             </span>
             <span
               style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
+                gridArea: "1 / 1",
                 transform: copied ? "translateY(0)" : "translateY(-100%)",
                 opacity: copied ? 1 : 0,
                 transition: "transform 0.5s ease, opacity 0.5s ease",

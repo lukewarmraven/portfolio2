@@ -20,7 +20,7 @@ interface PopupCarouselProps {
 /** Horizontal spread (design px) between adjacent items in the bottom pile. */
 const SPREAD_X = 36;
 /** Wheel debounce in ms — prevents rapid-fire scrolling. */
-const WHEEL_DEBOUNCE = 500;
+export const WHEEL_DEBOUNCE = 500;
 
 export default function PopupCarousel({
   items,
@@ -32,8 +32,6 @@ export default function PopupCarousel({
   const currentRef = useRef(currentIndex);
   currentRef.current = currentIndex;
   const containerRef = useRef<HTMLDivElement>(null);
-  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const canNavigate = useRef(true);
   const currentImageRef = useRef<HTMLImageElement | null>(null);
   const [imageRect, setImageRect] = useState<DOMRect | null>(null);
 
@@ -44,44 +42,6 @@ export default function PopupCarousel({
     },
     [total, onCurrentChange],
   );
-
-  const step = useCallback(
-    (dir: 1 | -1) => {
-      if (!canNavigate.current) return;
-      canNavigate.current = false;
-      if (debounceTimer.current) clearTimeout(debounceTimer.current);
-      debounceTimer.current = setTimeout(() => {
-        canNavigate.current = true;
-        debounceTimer.current = null;
-      }, WHEEL_DEBOUNCE);
-      const next = currentRef.current + dir;
-      const clamped = Math.max(0, Math.min(total - 1, next));
-      onCurrentChange(clamped);
-    },
-    [total, onCurrentChange],
-  );
-
-  // ── Native wheel listener — blocks scroll only when navigation is possible ──
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const handler = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-
-      const dir = e.deltaY > 0 ? 1 : -1;
-      const next = currentRef.current + dir;
-
-      if (next >= 0 && next < total) {
-        e.preventDefault();
-        e.stopPropagation();
-        step(dir);
-      }
-    };
-
-    el.addEventListener("wheel", handler, { passive: false });
-    return () => el.removeEventListener("wheel", handler);
-  }, [step, total]);
 
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);

@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { vw } from "@/lib/utils";
 import PopupCarousel, {
   type PopupCarouselItem,
+  WHEEL_DEBOUNCE,
 } from "@/components/ui/reusable-ui/PopupCarousel";
 
 const PROJECTS: PopupCarouselItem[] = [
@@ -39,9 +40,44 @@ const PROJECTS: PopupCarouselItem[] = [
 
 export default function Projects() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
+  const currentRef = useRef(currentIndex);
+  currentRef.current = currentIndex;
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ── Wheel handler on the snap wrapper (#projects) to cover padding area too ──
+  useEffect(() => {
+    const el = sectionRef.current?.parentElement;
+    if (!el) return;
+
+    const handler = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+
+      const dir = e.deltaY > 0 ? 1 : -1;
+      const next = currentRef.current + dir;
+
+      // At carousel boundary → let event bubble to RightMain for snap-scroll
+      if (next < 0 || next >= PROJECTS.length) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Within debounce window → consume the event but don't navigate again
+      if (debounceRef.current) return;
+
+      debounceRef.current = setTimeout(() => {
+        debounceRef.current = null;
+      }, WHEEL_DEBOUNCE);
+      setCurrentIndex(next);
+    };
+
+    el.addEventListener("wheel", handler, { passive: false });
+    return () => el.removeEventListener("wheel", handler);
+  }, []);
 
   return (
     <section
+      ref={sectionRef}
       className="flex flex-col"
       style={{ height: "100%", gap: vw(16) }}
     >

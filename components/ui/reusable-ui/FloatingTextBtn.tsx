@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { cn, vw } from "@/lib/utils";
 
 export interface FloatingTextBtnItem {
@@ -10,6 +10,8 @@ export interface FloatingTextBtnItem {
 
 interface FloatingTextBtnProps {
   items: FloatingTextBtnItem[];
+  page: number;
+  onPageChange: (page: number) => void;
   className?: string;
   onItemClick?: (item: FloatingTextBtnItem, index: number) => void;
   pageSize?: number;
@@ -51,7 +53,7 @@ const INIT_OFFSETS = [
   ],
 ];
 
-const WHEEL_DEBOUNCE = 600;
+export const WHEEL_DEBOUNCE = 600;
 const TRANSITION_MS = 550;
 const BURST_ANGLES = [0, 45, 90, 135, 180, 225, 270, 315];
 const PARTICLES_PER_ITEM = 10;
@@ -88,41 +90,20 @@ function enterKF(): string {
 
 export default function FloatingTextBtn({
   items,
+  page,
+  onPageChange,
   className,
   onItemClick,
   pageSize = 4,
 }: FloatingTextBtnProps) {
   const totalPages = Math.ceil(items.length / pageSize);
-  const [page, setPage] = useState(0);
   const [displayPage, setDisplayPage] = useState(0);
-  const pageRef = useRef(page);
-  pageRef.current = page;
 
   const [phase, setPhase] = useState<"idle" | "popping" | "entering">("idle");
   const [particles, setParticles] = useState<Particle[][]>([]);
   const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const canNavigate = useRef(true);
-  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const step = useCallback(
-    (dir: 1 | -1) => {
-      if (!canNavigate.current) return;
-      canNavigate.current = false;
-      if (debounceTimer.current) clearTimeout(debounceTimer.current);
-      debounceTimer.current = setTimeout(() => {
-        canNavigate.current = true;
-        debounceTimer.current = null;
-      }, WHEEL_DEBOUNCE);
-
-      const next = pageRef.current + dir;
-      if (next >= 0 && next < totalPages) {
-        setPage(next);
-      }
-    },
-    [totalPages],
-  );
 
   // ── Trigger transition when page changes ──
   useEffect(() => {
@@ -164,26 +145,6 @@ export default function FloatingTextBtn({
       if (transitionTimer.current) clearTimeout(transitionTimer.current);
     };
   }, []);
-
-  // ── Wheel navigation ──
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const handler = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-      const dir = e.deltaY > 0 ? 1 : -1;
-      const next = pageRef.current + dir;
-      if (next >= 0 && next < totalPages) {
-        e.preventDefault();
-        e.stopPropagation();
-        step(dir);
-      }
-    };
-
-    el.addEventListener("wheel", handler, { passive: false });
-    return () => el.removeEventListener("wheel", handler);
-  }, [step, totalPages]);
 
   // ── Styles ──
   const styleTag = useMemo(() => {

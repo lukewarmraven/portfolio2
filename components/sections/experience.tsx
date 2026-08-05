@@ -156,6 +156,7 @@ export default function Experience() {
 
       <div
         ref={scrollRef}
+        data-scroll-container
         onScroll={updateScrollState}
         className="no-scrollbar"
         style={{ overflowY: "auto", flex: "1 1 0", minHeight: 0 }}
