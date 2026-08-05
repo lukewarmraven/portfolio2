@@ -10,6 +10,7 @@ import {
   type MouseEvent,
   type ReactNode,
 } from "react";
+import { createPortal } from "react-dom";
 import { cn, vw } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
@@ -50,6 +51,14 @@ export interface CallingCardProps {
   defaultFlipped?: boolean;
   /** Fires on every flip with the new state. */
   onFlipChange?: (flipped: boolean) => void;
+  /** Enable hover preview (portals card to body with deeper shadow). Default: false. */
+  previewEnabled?: boolean;
+  /** Hover delay before preview opens in ms. Default: 2000. */
+  previewDelay?: number;
+  /** High-res image for preview when front face is visible. Falls back to rendering front ReactNode. */
+  previewFrontSrc?: string;
+  /** High-res image for preview when back face is visible. Falls back to rendering back ReactNode. */
+  previewBackSrc?: string;
   className?: string;
   style?: CSSProperties;
 }
@@ -70,6 +79,10 @@ export default function CallingCard({
   flipped: controlledFlipped,
   defaultFlipped = false,
   onFlipChange,
+  previewEnabled = false,
+  previewDelay = 2000,
+  previewFrontSrc,
+  previewBackSrc,
   className,
   style,
 }: CallingCardProps) {
@@ -84,6 +97,9 @@ export default function CallingCard({
   const tiltLayerRef = useRef<HTMLDivElement>(null);
   const flipLockRef = useRef(false);
   const flipTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const previewTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewRect, setPreviewRect] = useState<DOMRect | null>(null);
   const hoverCapableRef = useRef(true);
   const reducedMotionRef = useRef(false);
 
@@ -239,7 +255,53 @@ export default function CallingCard({
     }
   }, [glossEnabled]);
 
-  /* ---- derived values -------------------------------------------- */
+  /* ---- hover preview (portal card to body on long hover) --------- */
+
+	  const openPreview = useCallback(() => {
+	    if (cardRef.current) {
+	      setPreviewRect(cardRef.current.getBoundingClientRect());
+	      setPreviewOpen(true);
+	    }
+	  }, []);
+
+	  const closePreview = useCallback(() => {
+	    setPreviewOpen(false);
+	    setPreviewRect(null);
+	  }, []);
+
+	  const cancelPreviewTimer = useCallback(() => {
+	    if (previewTimerRef.current) {
+	      clearTimeout(previewTimerRef.current);
+	      previewTimerRef.current = null;
+	    }
+	  }, []);
+
+	  const handlePreviewEnter = useCallback(() => {
+	    if (!previewEnabled) return;
+	    cancelPreviewTimer();
+	    // If preview is already open, keep it alive
+	    if (previewOpen) return;
+	    previewTimerRef.current = setTimeout(openPreview, previewDelay);
+	  }, [previewEnabled, previewDelay, openPreview, cancelPreviewTimer, previewOpen]);
+
+	  // Card leave only cancels the timer — preview stays open
+	  const handleCardLeave = useCallback(() => {
+	    cancelPreviewTimer();
+	  }, [cancelPreviewTimer]);
+
+	  // Preview leave closes it
+	  const handlePreviewLeave = useCallback(() => {
+	    closePreview();
+	  }, [closePreview]);
+
+	  // Cleanup preview timer
+	  useEffect(() => {
+	    return () => {
+	      if (previewTimerRef.current) clearTimeout(previewTimerRef.current);
+	    };
+	  }, []);
+
+	  /* ---- derived values -------------------------------------------- */
 
   const effectiveFlipMs = reducedMotionRef.current ? 0 : flipMs;
   const isInteractive = flipEnabled;
@@ -298,6 +360,7 @@ export default function CallingCard({
   /* ---- render ---------------------------------------------------- */
 
   return (
+    <>
     <div
       ref={cardRef}
       role={isInteractive ? "button" : undefined}
@@ -307,9 +370,9 @@ export default function CallingCard({
       data-flipped={isFlipped ? "" : undefined}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      onMouseEnter={handleMouseEnter}
+      onMouseEnter={() => { handleMouseEnter(); handlePreviewEnter(); }}
       onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onMouseLeave={() => { handleMouseLeave(); handleCardLeave(); }}
       className={cn(
         "group/calling-card relative select-none",
         isInteractive && "cursor-pointer",
@@ -363,5 +426,47 @@ export default function CallingCard({
         </div>
       </div>
     </div>
+
+    {/* ── Hover preview (ported to body to escape container clipping) ── */}
+    {previewOpen && previewRect &&
+      createPortal(
+        <div
+          onMouseEnter={handlePreviewEnter}
+          onMouseLeave={handlePreviewLeave}
+          style={{
+            position: "fixed",
+            left: previewRect.left + previewRect.width / 2,
+            top: previewRect.top + previewRect.height / 2,
+            width: previewRect.width * 1.4,
+            height: previewRect.height * 1.4,
+            transform: "translate(-50%, -50%)",
+            zIndex: 9999,
+            borderRadius: vw(12),
+            boxShadow:
+              "0 8px 48px rgba(0,0,0,0.35), 0 16px 64px rgba(0,0,0,0.2)",
+            overflow: "hidden",
+          }}
+        >
+          {(isFlipped ? previewBackSrc : previewFrontSrc) ? (
+            <img
+              src={isFlipped ? previewBackSrc! : previewFrontSrc!}
+              alt=""
+              style={{
+                display: "block",
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                borderRadius: "inherit",
+              }}
+            />
+          ) : (
+            <div className="h-full w-full rounded-[inherit] border border-border bg-card text-card-foreground font-rajdhani shadow-card">
+              {isFlipped ? back : front}
+            </div>
+          )}
+        </div>,
+        document.body,
+      )}
+    </>
   );
 }

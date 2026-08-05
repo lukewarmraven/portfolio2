@@ -37,6 +37,9 @@ export default function Contact() {
         <div ref={cardRef} style={{ position: "relative" }}>
             <CallingCard
               onFlipChange={setFlipped}
+              previewEnabled
+              previewFrontSrc="/assets/contacts/Quinto-FrontCard.png"
+              previewBackSrc="/assets/contacts/Quinto-BackCard.png"
               style={{ width: vw(580), height: vw(348) }}
               front={
               <div className="relative h-full w-full">
