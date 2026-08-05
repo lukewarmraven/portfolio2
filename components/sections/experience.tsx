@@ -126,14 +126,28 @@ export default function Experience() {
         style={{ fontSize: vw(64) }}
       >
         <span
-          onClick={() => setShowExperience((v) => (v && !showEducation ? true : !v))}
+          onClick={() => {
+            if (showExperience && !showEducation) {
+              setShowExperience(false);
+              setShowEducation(true);
+            } else {
+              setShowExperience(!showExperience);
+            }
+          }}
           style={{ cursor: "pointer", color: showExperience ? "inherit" : "var(--color-muted-foreground)" }}
         >
           EXPERIENCE
         </span>
         {/* <span style={{ color: "var(--color-muted-foreground)" }}>/ </span> */}
         <span
-          onClick={() => setShowEducation((v) => (v && !showExperience ? true : !v))}
+          onClick={() => {
+            if (showEducation && !showExperience) {
+              setShowEducation(false);
+              setShowExperience(true);
+            } else {
+              setShowEducation(!showEducation);
+            }
+          }}
           style={{ cursor: "pointer", color: showEducation ? "inherit" : "var(--color-muted-foreground)" }}
         >
           / EDUCATION
