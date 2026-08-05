@@ -5,7 +5,7 @@ import { vw, vh } from "@/lib/utils";
 import LeftMain from "@/components/ui/page-ui/left-main";
 import RightMain from "@/components/ui/page-ui/right-main";
 import NavSections, { sections, type SectionId } from "@/components/ui/page-ui/navigation";
-import HomePage from "@/components/sections/home-page";
+import HomePage from "@/components/sections/home";
 import Experience from "@/components/sections/experience";
 import Projects from "@/components/sections/projects";
 import Seminars from "@/components/sections/seminars";
