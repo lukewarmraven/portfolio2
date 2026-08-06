@@ -9,6 +9,19 @@ export default function Contact() {
   const [showQR, setShowQR] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const [cardRect, setCardRect] = useState<DOMRect | null>(null);
+  const [copied, setCopied] = useState<string | null>(null);
+  const copiedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const copyToClipboard = useCallback(async (text: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      if (copiedTimer.current) clearTimeout(copiedTimer.current);
+      setCopied(label);
+      copiedTimer.current = setTimeout(() => setCopied(null), 1500);
+    } catch {
+      // clipboard unavailable — silently ignore
+    }
+  }, []);
 
   // Snapshot card position when QR preview opens
   useEffect(() => {
@@ -137,7 +150,7 @@ export default function Contact() {
           </span>
         </div>
 
-        {/* ── QR overlay (ported to body) ── */}
+        {/* ── QR + contact overlay (ported to body) ── */}
         {showQR && cardRect &&
           createPortal(
             <div
@@ -150,26 +163,116 @@ export default function Contact() {
                 cursor: "pointer",
               }}
             >
-              <Image
-                src="/assets/contacts/portfolio_qr.png"
-                alt="Portfolio QR code"
-                width={300}
-                height={300}
+              <div
+                onClick={(e) => e.stopPropagation()}
                 style={{
                   position: "fixed",
                   left: cardRect.left + cardRect.width / 2,
                   top: cardRect.top + cardRect.height / 2,
-                  width: vw(300),
-                  height: vw(300),
-                  transform: "translate(-50%, -50%) scale(1.4)",
-                  transformOrigin: "center center",
+                  transform: "translate(-50%, -50%)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: vw(48),
+                  background: "white",
                   borderRadius: vw(16),
+                  padding: vw(32),
                   boxShadow:
                     "0 8px 48px rgba(0,0,0,0.35), 0 16px 64px rgba(0,0,0,0.2)",
-                  background: "white",
-                  padding: vw(16),
+                  cursor: "default",
                 }}
-              />
+              >
+                {/* ── Left column: contact info ── */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: vw(16),
+                  }}
+                >
+                  {([
+                    {
+                      icon: "#",
+                      value: "09684319082",
+                      copyValue: "09684319082",
+                      label: "phone",
+                    },
+                    {
+                      icon: "@",
+                      value: "quintoravenluke@gmail.com",
+                      copyValue: "quintoravenluke@gmail.com",
+                      label: "email",
+                    },
+                    {
+                      icon: "  f",
+                      value: "/ravenluke.quinto",
+                      copyValue: "https://facebook.com/ravenluke.quinto",
+                      label: "facebook",
+                    },
+                  ] as const).map(({ icon, value, copyValue, label }) => (
+                    <button
+                      key={label}
+                      onClick={() => copyToClipboard(copyValue, label)}
+                      className="font-rajdhani hover:opacity-70 transition-opacity duration-200"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: vw(10),
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        padding: 0,
+                        fontSize: vw(32),
+                        color: "#1a1a1a",
+                        textAlign: "left" as const,
+                      }}
+                      title={`Copy ${label}`}
+                    >
+                      <span style={{ fontWeight: 700 }}>{icon}</span>
+                      <span
+                        style={{
+                          display: "grid",
+                          overflow: "hidden",
+                          width: vw(420),
+                        }}
+                      >
+                        <span
+                          style={{
+                            gridArea: "1 / 1",
+                            transform: copied === label ? "translateY(100%)" : "translateY(0)",
+                            opacity: copied === label ? 0 : 1,
+                            transition: "transform 0.3s ease, opacity 0.3s ease",
+                          }}
+                        >
+                          {value}
+                        </span>
+                        <span
+                          style={{
+                            gridArea: "1 / 1",
+                            transform: copied === label ? "translateY(0)" : "translateY(-100%)",
+                            opacity: copied === label ? 1 : 0,
+                            transition: "transform 0.5s ease, opacity 0.5s ease",
+                          }}
+                        >
+                          Copied!
+                        </span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* ── Right column: QR code ── */}
+                <Image
+                  src="/assets/contacts/portfolio_qr.png"
+                  alt="Portfolio QR code"
+                  width={200}
+                  height={200}
+                  style={{
+                    width: vw(200),
+                    height: vw(200),
+                    borderRadius: vw(8),
+                  }}
+                />
+              </div>
             </div>,
             document.body,
           )}
