@@ -6,17 +6,17 @@ import { vw } from "@/lib/utils";
 const socials = [
   {
     name: "Linkedin",
-    url: "https://linkedin.com/in/",
+    url: "https://www.linkedin.com/in/quintoravenluke/",
     logo: "",
   },
   {
     name: "Github",
-    url: "https://github.com/",
+    url: "https://github.com/lukewarmraven",
     logo: "",
   },
   {
     name: "Facebook",
-    url: "https://facebook.com/",
+    url: "https://www.facebook.com/ravenluke.quinto",
     logo: "",
   },
   {

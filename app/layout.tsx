@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { League_Gothic, Rajdhani } from "next/font/google";
+import CustomCursor from "@/components/ui/page-ui/cursor";
 import "./globals.css";
 
 const leagueGothic = League_Gothic({
@@ -47,6 +48,7 @@ export default function RootLayout({
       </head>
       <body className={`${leagueGothic.variable} ${rajdhani.variable}`}>
         {children}
+        <CustomCursor />
       </body>
     </html>
   );
