@@ -8,12 +8,14 @@ export interface PopupCarouselItem {
   image: string;
   title: string;
   description: string;
+  body?: string;
 }
 
 interface PopupCarouselProps {
   items: PopupCarouselItem[];
   currentIndex: number;
   onCurrentChange: (index: number) => void;
+  onItemClick?: (item: PopupCarouselItem) => void;
   className?: string;
 }
 
@@ -26,6 +28,7 @@ export default function PopupCarousel({
   items,
   currentIndex,
   onCurrentChange,
+  onItemClick,
   className,
 }: PopupCarouselProps) {
   const total = items.length;
@@ -71,9 +74,13 @@ export default function PopupCarousel({
 
   const handleClick = useCallback(
     (index: number) => {
-      if (index !== currentIndex) goTo(index);
+      if (index === currentIndex) {
+        onItemClick?.(items[index]);
+      } else {
+        goTo(index);
+      }
     },
-    [currentIndex, goTo],
+    [currentIndex, goTo, onItemClick, items],
   );
 
   const getZIndex = (offset: number) => {
@@ -126,7 +133,7 @@ export default function PopupCarousel({
               opacity: getOpacity(offset),
               transition:
                 "top 0.55s cubic-bezier(0.16, 1, 0.3, 1), left 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.55s ease",
-              cursor: isCurrent ? "default" : "pointer",
+              cursor: isCurrent ? (onItemClick ? "pointer" : "default") : "pointer",
             }}
             role="button"
             tabIndex={isCurrent ? -1 : 0}
