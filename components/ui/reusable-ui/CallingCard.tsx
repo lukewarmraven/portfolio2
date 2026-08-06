@@ -374,7 +374,7 @@ export default function CallingCard({
       onMouseMove={handleMouseMove}
       onMouseLeave={() => { handleMouseLeave(); handleCardLeave(); }}
       className={cn(
-        "group/calling-card relative select-none",
+        "group/calling-card relative select-none rounded-4xl",
         isInteractive && "cursor-pointer",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
         "touch-manipulation",
