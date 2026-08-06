@@ -20,6 +20,10 @@ import { useEffect, useRef } from "react";
  * ║  INK_HOVER_ALPHA       opacity multiplier when over interactive.        ║
  * ║                         < 1 = translucent, 1 = normal.                  ║
  * ║  INK_PRESS_RADIUS      px — core blob radius while dragging.            ║
+ * ║  CLICK_RIPPLE_RADIUS   px — max radius of the click ripple ring.        ║
+ * ║  CLICK_RIPPLE_LIFE     frames the ripple expands and fades.             ║
+ * ║  CLICK_BURST_COUNT     particles spawned on a single click.             ║
+ * ║  CLICK_BURST_SPEED     speed multiplier for click burst particles.      ║
  * ║  INK_BLEED             px — max distance the irregular edge extends.    ║
  * ║  INK_HALO_RADIUS       px — extra radius of the faint bleed halo.       ║
  * ║  INK_WOBBLE_SPEED      how fast the blob shape changes (0 = static).    ║
@@ -41,28 +45,32 @@ import { useEffect, useRef } from "react";
  */
 
 /* ─── Ink blob ─── */
-const INK_BASE_RADIUS = 5;
-const INK_HOVER_ALPHA = 0.8; // opacity multiplier when over interactive (0–1)
-const INK_PRESS_RADIUS = 4;
-const INK_BLEED = 2.5;
-const INK_HALO_RADIUS = 6;
+const INK_BASE_RADIUS = 3.5;
+const INK_HOVER_ALPHA = 0.6; // opacity multiplier when over interactive (0–1)
+const INK_PRESS_RADIUS = 3;
+const CLICK_RIPPLE_RADIUS = 28;
+const CLICK_RIPPLE_LIFE = 18;
+const CLICK_BURST_COUNT = 7;
+const CLICK_BURST_SPEED = 2.0;
+const INK_BLEED = 1.8;
+const INK_HALO_RADIUS = 4;
 const INK_WOBBLE_SPEED = 0.04;
 const INK_POINTS = 14;
-const CURSOR_EASE = 0.25;
+const CURSOR_EASE = 0.35;
 
 /* ─── Splatter particles ─── */
-const SPAWN_PER_FRAME = 0.8;
-const SPAWN_PER_FRAME_PRESS = 3;
-const SPLATTER_SPEED = 0.8;
-const SPLATTER_LIFE = 40;
-const MAX_SPLATTER = 200;
+const SPAWN_PER_FRAME = 0.4;
+const SPAWN_PER_FRAME_PRESS = 2;
+const SPLATTER_SPEED = 0.6;
+const SPLATTER_LIFE = 25;
+const MAX_SPLATTER = 120;
 
 /* ─── Trail ─── */
-const TRAIL_LENGTH_IDLE = 10;
-const TRAIL_LENGTH_DRAG = 50;
-const TRAIL_CORE_WIDTH = 3;
-const TRAIL_HALO_WIDTH = 10;
-const TRAIL_JITTER = 1.8; // px of edge roughness
+const TRAIL_LENGTH_IDLE = 8;
+const TRAIL_LENGTH_DRAG = 40;
+const TRAIL_CORE_WIDTH = 2;
+const TRAIL_HALO_WIDTH = 6;
+const TRAIL_JITTER = 1.2; // px of edge roughness
 
 /* ─── Canvas ─── */
 const DPR_CAP = 2;
@@ -102,6 +110,13 @@ interface TrailRing {
   buf: { x: number; y: number }[];
   head: number;
   count: number;
+}
+
+interface Ripple {
+  x: number;
+  y: number;
+  life: number;
+  maxLife: number;
 }
 
 /* ─── Simple smooth noise: returns -1..1 for a given frame + index ─── */
@@ -155,6 +170,7 @@ export default function CustomCursor() {
 
     /* ---- state ---- */
     let splatters: Splatter[] = [];
+    let ripples: Ripple[] = [];
     let mouseX = Number.NEGATIVE_INFINITY;
     let mouseY = Number.NEGATIVE_INFINITY;
     let cursorX = Number.NEGATIVE_INFINITY;
@@ -211,6 +227,29 @@ export default function CustomCursor() {
         size: 0.8 + Math.random() * 1.8,
         colorIdx: Math.floor(Math.random() * PALETTE.length),
       });
+    }
+
+    /* ---- click ripple + burst ---- */
+
+    function spawnClickEffect(x: number, y: number) {
+      // Ripple ring
+      ripples.push({ x, y, life: CLICK_RIPPLE_LIFE, maxLife: CLICK_RIPPLE_LIFE });
+
+      // Burst of faster particles
+      for (let i = 0; i < CLICK_BURST_COUNT; i++) {
+        if (splatters.length >= MAX_SPLATTER) splatters.shift();
+        const angle = (i / CLICK_BURST_COUNT) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
+        const speed = CLICK_BURST_SPEED * (0.6 + Math.random() * 0.8);
+        splatters.push({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: SPLATTER_LIFE * 1.6,
+          size: 1.0 + Math.random() * 2.2,
+          colorIdx: Math.floor(Math.random() * PALETTE.length),
+        });
+      }
     }
 
     /* ---- draw the irregular ink blob ---- */
@@ -371,7 +410,37 @@ export default function CustomCursor() {
         drawInkBleedTrail(idleTrail, 0.5);
       }
 
-      // 4) Draw ink blob.
+      // 4) Update & draw click ripples (under blob).
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const r = ripples[i];
+        r.life -= 1;
+        if (r.life <= 0) {
+          ripples[i] = ripples[ripples.length - 1];
+          ripples.pop();
+          continue;
+        }
+        const t = r.life / r.maxLife;
+        const radius = CLICK_RIPPLE_RADIUS * (1 - t);
+        const alpha = t * 0.45;
+
+        // Organic wobbly ring — matches the ink blob aesthetic.
+        ctx!.strokeStyle = `rgba(0, 0, 0, ${alpha.toFixed(3)})`;
+        ctx!.lineWidth = 1.2 * (0.3 + 0.7 * t);
+        ctx!.beginPath();
+        for (let j = 0; j < INK_POINTS; j++) {
+          const angle = (j / INK_POINTS) * Math.PI * 2;
+          const n = noise(frame, j + 20, INK_WOBBLE_SPEED * 1.3);
+          const rr = radius + n * INK_BLEED * 0.8;
+          const px = r.x + Math.cos(angle) * rr;
+          const py = r.y + Math.sin(angle) * rr;
+          if (j === 0) ctx!.moveTo(px, py);
+          else ctx!.lineTo(px, py);
+        }
+        ctx!.closePath();
+        ctx!.stroke();
+      }
+
+      // 5) Draw ink blob.
       if (hasMoved) {
         const radius = isDown ? INK_PRESS_RADIUS : INK_BASE_RADIUS;
         const alphaMul = hoveringInteractive ? INK_HOVER_ALPHA : 1;
@@ -381,7 +450,7 @@ export default function CustomCursor() {
         drawInkBlob(cursorX, cursorY, radius, alphaMul, hoverColor);
       }
 
-      // 5) Update & draw splatters (on top of blob for depth).
+      // 6) Update & draw splatters (on top of blob for depth).
       for (let i = splatters.length - 1; i >= 0; i--) {
         const s = splatters[i];
         s.life -= 1;
@@ -452,6 +521,7 @@ export default function CustomCursor() {
       isDown = true;
       dragTrail.count = 0;
       dragTrail.head = 0;
+      spawnClickEffect(cursorX, cursorY);
     }
 
     function onPointerUp() {

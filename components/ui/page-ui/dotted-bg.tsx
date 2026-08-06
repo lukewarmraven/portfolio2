@@ -41,6 +41,11 @@ import { useEffect, useRef } from "react";
  * ║                       • Lower  = subtler, gentler displacement           ║
  * ║                       • 30–60 is a good range; 40 is the default         ║
  * ║                                                                          ║
+ * ║  SWIRL_STRENGTH      tangential orbit force (px/frame²). Dots near the  ║
+ * ║                       cursor revolve around it instead of just fleeing.  ║
+ * ║                       • Peaks at mid-radius, zero at centre & edge.      ║
+ * ║                       • 0 = no swirl; 10–25 = subtle planetary orbit.   ║
+ * ║                                                                          ║
  * ║  SPRING_K            0–1 spring stiffness pulling dots back home.        ║
  * ║                       • 0.04–0.10 snappy; > 0.15 jitters                 ║
  * ║                       • Increase → dots snap back faster (snappier)      ║
@@ -80,22 +85,25 @@ const DOT_GAP = 15;
 /* ---- behaviour --------------------------------------------------------- */
 
 /** px — dots within this distance of the cursor get pushed. 80–200.       */
-const REPULSION_RADIUS = 50;
+const REPULSION_RADIUS = 55;
 
 /** Raw push force at the cursor centre (px/frame²). 30–60 is good.        */
-const REPULSION_STRENGTH = 50;
+const REPULSION_STRENGTH = 80;
+
+/** Tangential orbit force (px/frame²). Peaks at mid-radius. 10–25.         */
+const SWIRL_STRENGTH = 5;
 
 /** 0–1 spring stiffness pulling dots back home. 0.04–0.10 snappy.         */
-const SPRING_K = 0.02;
+const SPRING_K = 0.03;
 
 /** 0–1 velocity retained each frame. 0.10–0.20 → gentle settle.           */
-const DAMPING = 0.15;
+const DAMPING = 0.16;
 
 /** px/frame — speed ceiling so a fast flick can't explode the sim.        */
-const MAX_SPEED = 40;
+const MAX_SPEED = 30;
 
 /** px — hard cap on distance from home. Keeps the grid readable.          */
-const MAX_OFFSET = 50;
+const MAX_OFFSET = 45;
 
 /** px/frame² — gentle idle drift so dots float instead of sitting flat.
  *  0 = no float, 0.02 = subtle, 0.05 = noticeable wobble.                  */
@@ -199,6 +207,12 @@ export default function DottedBg() {
           const force = REPULSION_STRENGTH * falloff * falloff;
           d.vx += (dx / dist) * force;
           d.vy += (dy / dist) * force;
+
+          // Swirl: tangential force, peaks at mid-radius (falloff=0.5).
+          const swirlFalloff = falloff * (1 - falloff) * 4;
+          const swirlForce = SWIRL_STRENGTH * swirlFalloff;
+          d.vx += (-dy / dist) * swirlForce;
+          d.vy += (dx / dist) * swirlForce;
         }
 
         // 2) Spring toward home.
