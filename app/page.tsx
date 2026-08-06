@@ -20,6 +20,8 @@ import Seminars from "@/components/sections/seminars";
 import Contact from "@/components/sections/contact";
 import Socials from "@/components/ui/page-ui/socials";
 import DottedBg from "@/components/ui/page-ui/dotted-bg";
+import Expanded from "@/components/sections/expanded";
+import { ExpandedProvider, useExpanded } from "@/contexts/expanded-context";
 
 const SECTION_COMPONENTS: Record<SectionId, () => React.JSX.Element> = {
   home: HomePage,
@@ -37,17 +39,30 @@ const leftContent = {
 };
 
 export default function Home() {
+  return (
+    <ExpandedProvider>
+      <HomeContent />
+    </ExpandedProvider>
+  );
+}
+
+function HomeContent() {
   const [active, setActive] = useState<SectionId>("home");
   const scrollingRef = useRef(false);
+  const { close } = useExpanded();
 
   const scrollToSection = useCallback((id: SectionId) => {
+    close(); // dismiss expanded view if open
     scrollingRef.current = true;
     setActive(id);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    // Wait for React to re-render sections into DOM before scrolling
+    requestAnimationFrame(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    });
     setTimeout(() => {
       scrollingRef.current = false;
     }, 800);
-  }, []);
+  }, [close]);
 
   useEffect(() => {
     document.title = `${SECTION_TITLES[active]} | Portfolio`;
@@ -88,12 +103,56 @@ export default function Home() {
             <h3 className="font-league-gothic m-0" style={{ fontSize: vw(40) }}>{leftContent.title} | {leftContent.course}</h3>
           </div>
           <p className="font-rajdhani" style={{ fontSize: vw(32) }}>{leftContent.description}</p>
-       
+
           <NavSections active={active} onSelect={scrollToSection} />
           <Socials/>
         </section>
       </LeftMain>
       <RightMain>
+        <RightContent />
+      </RightMain>
+    </div>
+    </>
+  );
+}
+
+function RightContent() {
+  const { expandedData, close } = useExpanded();
+  const scrollPosRef = useRef(0);
+  const expandedRef = useRef(expandedData);
+  expandedRef.current = expandedData;
+
+  const handleBack = useCallback(() => {
+    close();
+  }, [close]);
+
+  // Continuously track RightMain scroll position (ignore collapse events when expanded)
+  useEffect(() => {
+    const el = document.querySelector<HTMLElement>("[data-right-main]");
+    if (!el) return;
+    const onScroll = () => {
+      if (!expandedRef.current) scrollPosRef.current = el.scrollTop;
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Restore scroll position when expanded closes
+  useEffect(() => {
+    if (!expandedData && scrollPosRef.current > 0) {
+      const el = document.querySelector<HTMLElement>("[data-right-main]");
+      if (el) {
+        requestAnimationFrame(() => {
+          el.scrollTop = scrollPosRef.current;
+        });
+      }
+    }
+  }, [expandedData]);
+
+  return (
+    <>
+      {/* Sections — always mounted so DOM IDs exist for scrollIntoView */}
+      <div style={{ display: expandedData ? "none" : "contents" }}>
         {sections.map(({ id }) => {
           const Section = SECTION_COMPONENTS[id];
           return (
@@ -102,8 +161,18 @@ export default function Home() {
             </div>
           );
         })}
-      </RightMain>
-    </div>
+      </div>
+
+      {/* Expanded overlay */}
+      {expandedData && (
+        <div style={{ height: "100%", paddingTop: vh(300), paddingBottom: vh(300), boxSizing: "border-box" }}>
+          <Expanded
+            title={expandedData.title}
+            body={expandedData.body}
+            onBack={handleBack}
+          />
+        </div>
+      )}
     </>
   );
 }

@@ -43,6 +43,7 @@ export default function RightMain({ children }: { children?: React.ReactNode }) 
   return (
     <div
       ref={rightMainRef}
+      data-right-main
       className="no-scrollbar"
       style={{
         width: vw(635),

@@ -6,6 +6,7 @@ import { cn, vw } from "@/lib/utils";
 export interface FloatingTextBtnItem {
   number: string;
   title: string;
+  body?: string;
 }
 
 interface FloatingTextBtnProps {
