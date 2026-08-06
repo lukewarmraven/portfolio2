@@ -80,7 +80,7 @@ const DOT_GAP = 15;
 /* ---- behaviour --------------------------------------------------------- */
 
 /** px — dots within this distance of the cursor get pushed. 80–200.       */
-const REPULSION_RADIUS = 75;
+const REPULSION_RADIUS = 50;
 
 /** Raw push force at the cursor centre (px/frame²). 30–60 is good.        */
 const REPULSION_STRENGTH = 50;

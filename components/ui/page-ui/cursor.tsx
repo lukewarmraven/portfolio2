@@ -42,7 +42,7 @@ import { useEffect, useRef } from "react";
 
 /* ─── Ink blob ─── */
 const INK_BASE_RADIUS = 5;
-const INK_HOVER_ALPHA = 0.6; // opacity multiplier when over interactive (0–1)
+const INK_HOVER_ALPHA = 0.8; // opacity multiplier when over interactive (0–1)
 const INK_PRESS_RADIUS = 4;
 const INK_BLEED = 2.5;
 const INK_HALO_RADIUS = 6;

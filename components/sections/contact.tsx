@@ -131,7 +131,7 @@ export default function Contact() {
         >
           <span
             className="font-rajdhani text-muted-foreground"
-            style={{ fontSize: vw(24) }}
+            style={{ fontSize: vw(32) }}
           >
             {flipped ? "— Click to view front side —" : "— Click to view back side —"}
           </span>
