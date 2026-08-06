@@ -2,6 +2,16 @@
 
 import { type ReactNode } from "react";
 import { vw } from "@/lib/utils";
+import ImageCarousel from "@/components/ui/reusable-ui/ImageCarousel";
+
+const DEMO_IMAGES = [
+  "/assets/projects/resbac/web0.png",
+  "/assets/projects/resbac/web1.png",
+  "/assets/projects/resbac/web2.png",
+  "/assets/projects/resbac/web3.png",
+  "/assets/projects/resbac/mob0.jpg",
+  "/assets/projects/resbac/mob1.jpg",
+];
 
 export interface ExpandedProps {
   title: string;
@@ -21,10 +31,8 @@ export default function Expanded({
   return (
     <section
       className={`flex flex-col ${className ?? ""}`}
-      style={{ height: "100%", gap: vw(16) }}
+      style={{ height: "100%", gap: vw(32) }}
     >
-      {/* Back button */}
-
       {/* Title — vw(32), all caps, bold */}
       <h1
         className="text-center font-rajdhani m-0 uppercase"
@@ -42,7 +50,7 @@ export default function Expanded({
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: vw(16),
+            gap: vw(32),
           }}
         >
           {/* Text body — 4-line clamp, scrollable */}
@@ -58,24 +66,8 @@ export default function Expanded({
             </p>
           </div>
 
-          {/* Image gallery slot */}
-          {children ?? (
-            <div
-              className="flex items-center justify-center border border-dashed"
-              style={{
-                minHeight: vw(200),
-                borderRadius: vw(8),
-                borderColor: "var(--color-border)",
-              }}
-            >
-              <span
-                className="font-rajdhani text-muted-foreground"
-                style={{ fontSize: vw(32) }}
-              >
-                — Image gallery —
-              </span>
-            </div>
-          )}
+          {/* Image gallery */}
+          {children ?? <ImageCarousel images={DEMO_IMAGES} />}
 
           {onBack && (
             <button
