@@ -14,8 +14,11 @@ const rajdhani = Rajdhani({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio",
-  description: "My portfolio",
+  title: "Home | Portfolio",
+  description: "Portfolio by Raven Luke Quinto",
+  icons: {
+    icon: "/assets/misc/portfolio-icon.ico",
+  },
 };
 
 export default function RootLayout({

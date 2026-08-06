@@ -5,6 +5,14 @@ import { vw, vh } from "@/lib/utils";
 import LeftMain from "@/components/ui/page-ui/left-main";
 import RightMain from "@/components/ui/page-ui/right-main";
 import NavSections, { sections, type SectionId } from "@/components/ui/page-ui/navigation";
+
+const SECTION_TITLES: Record<SectionId, string> = {
+  home: "Home",
+  experience: "Experience",
+  projects: "Projects",
+  seminars: "Seminars & Events",
+  contact: "Contact",
+};
 import HomePage from "@/components/sections/home";
 import Experience from "@/components/sections/experience";
 import Projects from "@/components/sections/projects";
@@ -40,6 +48,10 @@ export default function Home() {
       scrollingRef.current = false;
     }, 800);
   }, []);
+
+  useEffect(() => {
+    document.title = `${SECTION_TITLES[active]} | Portfolio`;
+  }, [active]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
