@@ -9,6 +9,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { vw } from "@/lib/utils";
+import { useTheme } from "@/contexts/theme-context";
 import ImageCarousel from "@/components/ui/reusable-ui/ImageCarousel";
 
 const DEMO_IMAGES = [
@@ -43,6 +44,12 @@ export default function Expanded({
   className,
 }: ExpandedProps) {
   const images = DEMO_IMAGES;
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
+  const backdropGradient = isDark
+    ? "radial-gradient(ellipse at center, transparent 35%, rgba(20, 20, 24, 0.85) 100%)"
+    : "radial-gradient(ellipse at center, transparent 35%, rgba(250, 248, 243, 0.78) 100%)";
 
   /* ── Modal state ── */
   const [modalIndex, setModalIndex] = useState<number | null>(null);
@@ -50,6 +57,7 @@ export default function Expanded({
   const [imgVisible, setImgVisible] = useState(true);
   const flipLockRef = useRef(false);
   const swipeRef = useRef<{ x: number; y: number } | null>(null);
+  const [imgHovered, setImgHovered] = useState(false);
 
   /* ── Open: flip tile → portal modal ── */
   const openModal = useCallback(
@@ -237,8 +245,7 @@ export default function Expanded({
               style={{
                 position: "absolute",
                 inset: 0,
-                background:
-                  "radial-gradient(ellipse at center, transparent 35%, rgba(250, 248, 243, 0.78) 100%)",
+                background: backdropGradient,
                 backdropFilter: "blur(28px)",
                 WebkitBackdropFilter: "blur(28px)",
                 opacity: modalOpen ? 1 : 0,
@@ -248,6 +255,14 @@ export default function Expanded({
 
             {/* ── Image card (glass plate) ── */}
             <div
+              onMouseEnter={(e) => {
+                e.stopPropagation();
+                setImgHovered(true);
+              }}
+              onMouseLeave={(e) => {
+                e.stopPropagation();
+                setImgHovered(false);
+              }}
               style={{
                 position: "relative",
                 display: "flex",
@@ -274,10 +289,11 @@ export default function Expanded({
                   maxHeight: "88vh",
                   objectFit: "contain",
                   borderRadius: vw(12),
-                  boxShadow:
-                    "0 0 0 1px rgba(0,0,0,0.06), 0 4px 24px rgba(0,0,0,0.1), 0 12px 48px rgba(0,0,0,0.06)",
+                  boxShadow: imgHovered
+                    ? "0 0 0 1px rgba(0,0,0,0.08), 0 0 72px rgba(0,0,0,0.12), 0 12px 56px rgba(0,0,0,0.18), 0 32px 96px rgba(0,0,0,0.12)"
+                    : "0 0 0 1px rgba(0,0,0,0.06), 0 0 32px rgba(0,0,0,0.04), 0 8px 48px rgba(0,0,0,0.14), 0 24px 80px rgba(0,0,0,0.1)",
                   opacity: imgVisible ? 1 : 0,
-                  transition: `opacity 0.15s ease`,
+                  transition: `opacity 0.15s ease, box-shadow 400ms ${EASE}`,
                 }}
               />
             </div>
@@ -399,6 +415,9 @@ function Button({
   label: string;
   children: ReactNode;
 }) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   return (
     <button
       onClick={(e) => {
@@ -410,10 +429,12 @@ function Button({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "rgba(0,0,0,0.04)",
-        border: "1px solid rgba(0,0,0,0.08)",
+        background: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)",
+        border: isDark
+          ? "1px solid rgba(255,255,255,0.1)"
+          : "1px solid rgba(0,0,0,0.08)",
         borderRadius: "50%",
-        color: "var(--color-foreground, #1a1a1a)",
+        color: "var(--color-card-foreground, #1a1a1a)",
         cursor: "pointer",
         backdropFilter: "blur(16px)",
         WebkitBackdropFilter: "blur(16px)",
@@ -436,6 +457,9 @@ function NavArrow({
   onClick: () => void;
   visible: boolean;
 }) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   return (
     <button
       onClick={(e) => {
@@ -453,10 +477,12 @@ function NavArrow({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "rgba(0,0,0,0.04)",
-        border: "1px solid rgba(0,0,0,0.08)",
+        background: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)",
+        border: isDark
+          ? "1px solid rgba(255,255,255,0.1)"
+          : "1px solid rgba(0,0,0,0.08)",
         borderRadius: "50%",
-        color: "var(--color-foreground, #1a1a1a)",
+        color: "var(--color-card-foreground, #1a1a1a)",
         fontSize: vw(40),
         lineHeight: 1,
         cursor: "pointer",

@@ -30,6 +30,20 @@
   display: none;
 }
 
+body {
+  background: var(--color-card, #ffffff);
+}
+
+/* ── Dark mode ── */
+html.dark {
+  --color-card: #1a1a1e;
+  --color-card-foreground: #f1f1f1;
+  --color-muted-foreground: #9a9a9a;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-card-hover: 0 2px 4px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
 :root {
   --figma-scale-w: 0.74;
   --figma-scale-h: 0.64;

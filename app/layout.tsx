@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { League_Gothic, Rajdhani } from "next/font/google";
 import CustomCursor from "@/components/ui/page-ui/cursor";
+import ClientLayout from "@/components/ui/page-ui/client-layout";
 import "./globals.css";
 
 const leagueGothic = League_Gothic({
@@ -30,25 +32,33 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                var w = document.documentElement;
-                function update() {
-                  w.style.setProperty('--figma-scale-w', (window.innerWidth / 1728).toFixed(4));
-                  w.style.setProperty('--figma-scale-h', (window.innerHeight / 1117).toFixed(4));
-                }
-                update();
-                window.addEventListener('resize', update);
-              })();
-            `,
-          }}
-        />
+        {/* ── Flash prevention: apply dark class before first paint ── */}
+        <Script id="theme-flash" strategy="beforeInteractive">
+          {`(function() {
+            var theme = localStorage.getItem('theme');
+            if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+              document.documentElement.classList.add('dark');
+            }
+          })();`}
+        </Script>
+        {/* ── Figma-scale viewport calibration ── */}
+        <Script id="figma-scale" strategy="beforeInteractive">
+          {`(function() {
+            var w = document.documentElement;
+            function update() {
+              w.style.setProperty('--figma-scale-w', (window.innerWidth / 1728).toFixed(4));
+              w.style.setProperty('--figma-scale-h', (window.innerHeight / 1117).toFixed(4));
+            }
+            update();
+            window.addEventListener('resize', update);
+          })();`}
+        </Script>
       </head>
       <body className={`${leagueGothic.variable} ${rajdhani.variable}`}>
-        {children}
-        <CustomCursor />
+        <ClientLayout>
+          {children}
+          <CustomCursor />
+        </ClientLayout>
       </body>
     </html>
   );
