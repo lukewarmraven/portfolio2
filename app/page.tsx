@@ -49,7 +49,13 @@ export default function Home() {
 function HomeContent() {
   const [active, setActive] = useState<SectionId>("home");
   const scrollingRef = useRef(false);
-  const { close } = useExpanded();
+  const { expandedData, close } = useExpanded();
+  const activeRef = useRef(active);
+  activeRef.current = active;
+  const expandedRef = useRef(expandedData);
+  expandedRef.current = expandedData;
+  const navInProgressRef = useRef(false);
+  const SECTIONS_ORDER = sections.map((s) => s.id);
 
   const scrollToSection = useCallback((id: SectionId) => {
     close(); // dismiss expanded view if open
@@ -67,6 +73,101 @@ function HomeContent() {
   useEffect(() => {
     document.title = `${SECTION_TITLES[active]} | Portfolio`;
   }, [active]);
+
+  // ── Global wheel: cursor anywhere on the page drives RightMain ──
+  useEffect(() => {
+    const onWheel = (e: WheelEvent) => {
+      // Let Projects/Seminars handlers consume first (they stopPropagation)
+      if (e.defaultPrevented) return;
+      // Expanded overlay open → let native scroll handle its inner areas
+      if (expandedRef.current) return;
+      // Horizontal-dominant gestures → ignore
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+
+      const target = e.target as Node;
+      if (!(target instanceof Node)) return;
+
+      // Which section is the cursor physically over?
+      let sectionEl: HTMLElement | null = null;
+      for (const id of SECTIONS_ORDER) {
+        const el = document.getElementById(id);
+        if (el && el.contains(target)) { sectionEl = el; break; }
+      }
+
+      if (sectionEl) {
+        // Branch 1: section has an inner scroll container that can still scroll
+        const scrollEl =
+          sectionEl.querySelector<HTMLElement>("[data-scroll-container]");
+        if (scrollEl) {
+          const { scrollTop, scrollHeight, clientHeight } = scrollEl;
+          const atTop = scrollTop <= 0;
+          const atBottom = scrollHeight - scrollTop - clientHeight <= 1;
+          const down = e.deltaY > 0;
+          const up = e.deltaY < 0;
+          if ((down && !atBottom) || (up && !atTop)) {
+            e.preventDefault();
+            scrollEl.scrollTop += e.deltaY;
+            return;
+          }
+        }
+        // Branch 2: cursor inside a section but no inner scroll to consume
+        // → let native wheel scroll [data-right-main] with snap
+        return;
+      }
+
+      // Branch 3: cursor outside all sections (LeftMain / background)
+      // → drive the active section's inner content first, then advance
+      const activeEl = document.getElementById(activeRef.current);
+      if (activeEl) {
+        // 3a) Inner scroll container (Experience cards)
+        const innerScroll =
+          activeEl.querySelector<HTMLElement>("[data-scroll-container]");
+        if (innerScroll) {
+          const { scrollTop, scrollHeight, clientHeight } = innerScroll;
+          const atTop = scrollTop <= 0;
+          const atBottom = scrollHeight - scrollTop - clientHeight <= 1;
+          const down = e.deltaY > 0;
+          const up = e.deltaY < 0;
+          if ((down && !atBottom) || (up && !atTop)) {
+            e.preventDefault();
+            innerScroll.scrollTop += e.deltaY;
+            return;
+          }
+        }
+
+        // 3b) Delegate to section wheel handlers (Projects/Seminars pagination)
+        const synthetic = new WheelEvent("wheel", {
+          deltaY: e.deltaY,
+          deltaX: e.deltaX,
+          deltaMode: e.deltaMode,
+          bubbles: true,
+          cancelable: true,
+        });
+        activeEl.dispatchEvent(synthetic);
+        if (synthetic.defaultPrevented) {
+          e.preventDefault();
+          return;
+        }
+      }
+
+      // 3c) At inner-content boundary → advance to next/prev section
+      if (scrollingRef.current || navInProgressRef.current) return;
+      const idx = SECTIONS_ORDER.indexOf(activeRef.current);
+      const nextIdx = idx + (e.deltaY > 0 ? 1 : -1);
+      if (nextIdx < 0 || nextIdx >= SECTIONS_ORDER.length) return;
+      e.preventDefault();
+      navInProgressRef.current = true;
+      document
+        .getElementById(SECTIONS_ORDER[nextIdx])
+        ?.scrollIntoView({ behavior: "smooth" });
+      setTimeout(() => {
+        navInProgressRef.current = false;
+      }, 800);
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+    return () => window.removeEventListener("wheel", onWheel);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
