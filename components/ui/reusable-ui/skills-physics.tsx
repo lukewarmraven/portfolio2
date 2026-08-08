@@ -116,7 +116,7 @@ export default function SkillsPhysics({ skills }: SkillsPhysicsProps) {
       if (ch === " ") return;
 
       const x = W / 2 + (i - chars.length / 2) * (boxW + 2) + (Math.random() * 10 - 5);
-      const y = -50 - i * 40;
+      const y = -10 - i * 5;
 
       const body = Bodies.rectangle(x, y, boxW, boxH, {
         restitution: 0.35,
@@ -155,6 +155,14 @@ export default function SkillsPhysics({ skills }: SkillsPhysicsProps) {
         gap: vw(4),
       }}
     >
+      {/* Title */}
+      <h2
+        className="font-rajdhani font-bold m-0"
+        style={{ fontSize: vw(32), textAlign: "center", flexShrink: 0 }}
+      >
+        SKILLS
+      </h2>
+
       {/* Clickable skill tags */}
       <p
         style={{
