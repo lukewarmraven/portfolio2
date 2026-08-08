@@ -1,4 +1,5 @@
 import { vw } from "@/lib/utils";
+import SkillsPhysics from "@/components/ui/reusable-ui/skills-physics";
 
 const SKILLS = [
   "React",
@@ -40,29 +41,44 @@ export default function HomePage() {
             height: "100%",
           }}
         >
-          {SKILLS.map((skill) => (
-            <div
-              key={skill}
-              style={{
-                width: "100%",
-                minWidth: "100%",
-                height: "100%",
-                scrollSnapAlign: "start",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "var(--color-card)",
-                borderRadius: vw(12),
-              }}
+          {/* Page 1 — Skills Physics */}
+          <div
+            style={{
+              width: "100%",
+              minWidth: "100%",
+              height: "100%",
+              scrollSnapAlign: "start",
+              display: "flex",
+              flexDirection: "column",
+              background: "var(--color-card)",
+              borderRadius: vw(12),
+              padding: vw(24),
+            }}
+          >
+            <SkillsPhysics skills={SKILLS} />
+          </div>
+
+          {/* Page 2 — placeholder */}
+          <div
+            style={{
+              width: "100%",
+              minWidth: "100%",
+              height: "100%",
+              scrollSnapAlign: "start",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "var(--color-card)",
+              borderRadius: vw(12),
+            }}
+          >
+            <span
+              className="font-league-gothic"
+              style={{ fontSize: vw(48) }}
             >
-              <span
-                className="font-league-gothic"
-                style={{ fontSize: vw(96) }}
-              >
-                {skill}
-              </span>
-            </div>
-          ))}
+              More coming soon
+            </span>
+          </div>
         </div>
       </div>
     </section>
