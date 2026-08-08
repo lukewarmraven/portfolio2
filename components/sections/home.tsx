@@ -1,5 +1,9 @@
+"use client";
+
+import { useState } from "react";
 import { vw } from "@/lib/utils";
 import SkillsPhysics from "@/components/ui/reusable-ui/skills-physics";
+import VersionSwitcher from "@/components/ui/reusable-ui/version-switcher";
 
 const SKILLS = [
   "React",
@@ -13,6 +17,7 @@ const SKILLS = [
 ];
 
 export default function HomePage() {
+  const [hoveredVersion, setHoveredVersion] = useState<number | null>(null);
   return (
     <section
       className="flex flex-col"
@@ -50,7 +55,7 @@ export default function HomePage() {
               scrollSnapAlign: "start",
               display: "flex",
               flexDirection: "column",
-              background: "var(--color-card)",
+              background: "transparent",
               borderRadius: vw(12),
               padding: vw(24),
             }}
@@ -58,7 +63,7 @@ export default function HomePage() {
             <SkillsPhysics skills={SKILLS} />
           </div>
 
-          {/* Page 2 — placeholder */}
+          {/* Page 2 — Version Switcher */}
           <div
             style={{
               width: "100%",
@@ -66,18 +71,54 @@ export default function HomePage() {
               height: "100%",
               scrollSnapAlign: "start",
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "var(--color-card)",
+              flexDirection: "column",
+              background: "transparent",
               borderRadius: vw(12),
+              gap: vw(140),
             }}
           >
-            <span
-              className="font-league-gothic"
-              style={{ fontSize: vw(48) }}
-            >
-              More coming soon
-            </span>
+            {/* Heading + title — tight together */}
+            <div style={{ flexShrink: 0 }}>
+              <h1
+                className="text-center font-rajdhani m-0 uppercase"
+                style={{
+                  fontSize: vw(32),
+                  fontWeight: "bold",
+                  margin: 0,
+                  lineHeight: 1,
+                }}
+              >
+                Visit other versions
+              </h1>
+
+              <div style={{ textAlign: "center", lineHeight: 1 }}>
+                <span
+                  className="font-rajdhani"
+                  style={{
+                    fontSize: vw(32),
+                    color: hoveredVersion === 1 ? "#EC1D39" : "inherit",
+                    opacity: hoveredVersion ? 1 : 0,
+                    transition: "opacity 0.3s ease",
+                  }}
+                >
+                  {hoveredVersion === 1 ? "Version 1" : "Version 2"}
+                </span>
+                {hoveredVersion === 2 && (
+                  <span
+                    className="font-rajdhani text-muted-foreground"
+                    style={{
+                      fontSize: vw(32),
+                      opacity: 0.5,
+                      transition: "opacity 0.3s ease",
+                    }}
+                  >
+                    {" "}(current)
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <VersionSwitcher hovered={hoveredVersion} onHoverChange={setHoveredVersion} />
           </div>
         </div>
       </div>
