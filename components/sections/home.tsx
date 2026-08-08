@@ -1,19 +1,70 @@
 import { vw } from "@/lib/utils";
 
-const leftContent = {
-  name: "Raven Luke Quinto",
-  title: "Full Stack Web Engineer",
-  course: "BSIT",
-  description: "I am Raven Luke E. Quinto, a 4th Year BSIT student and aspiring fullstack / software developer from Polytechnic University of the Philippines-Sta. Mesa, Manila.",
-};
+const SKILLS = [
+  "React",
+  "Next.js",
+  "TypeScript",
+  "Node.js",
+  "PostgreSQL",
+  "Tailwind",
+  "Figma",
+  "AWS",
+];
 
 export default function HomePage() {
   return (
-    <section>
-      <h1 className="font-league-gothic m-0" style={{ fontSize: vw(64) }}>HOME</h1>
-      <p className="font-rajdhani" style={{ fontSize: vw(24) }}>
-        Home content coming soon.
-      </p>
+    <section
+      className="flex flex-col"
+      style={{ height: "100%", gap: vw(16) }}
+    >
+      <h1
+        className="font-league-gothic m-0"
+        style={{ fontSize: vw(64) }}
+      >
+        HOME
+      </h1>
+
+      <div
+        className="no-scrollbar"
+        style={{
+          flex: "1 1 0",
+          minHeight: 0,
+          overflowX: "auto",
+          scrollSnapType: "x mandatory",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            height: "100%",
+          }}
+        >
+          {SKILLS.map((skill) => (
+            <div
+              key={skill}
+              style={{
+                width: "100%",
+                minWidth: "100%",
+                height: "100%",
+                scrollSnapAlign: "start",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "var(--color-card)",
+                borderRadius: vw(12),
+              }}
+            >
+              <span
+                className="font-league-gothic"
+                style={{ fontSize: vw(96) }}
+              >
+                {skill}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
