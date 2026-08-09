@@ -22,6 +22,11 @@ const PERIODS: { value: Period; label: string }[] = [
 
 const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
 
+const AVATAR_COLORS = [
+  "#DC2626", "#0891B2", "#F59E0B", "#7C3AED",
+  "#DB2777", "#2563EB", "#EA580C", "#65A30D",
+];
+
 // Module-level cache — survives remounts, cleared on full reload
 const cache: Record<string, Artist[]> = {};
 
@@ -225,6 +230,7 @@ export default function LastfmStats() {
                   name={artist.name}
                   placeholder={isPlaceholder}
                   large={isCurrent}
+                  color={AVATAR_COLORS[i % AVATAR_COLORS.length]}
                 />
                 <span
                   className="font-rajdhani"
@@ -290,11 +296,13 @@ function ArtistImage({
   name,
   placeholder,
   large,
+  color,
 }: {
   img: string;
   name: string;
   placeholder: boolean;
   large: boolean;
+  color: string;
 }) {
   const [failed, setFailed] = useState(false);
   const showInitial = placeholder || failed || !img;
@@ -307,7 +315,7 @@ function ArtistImage({
         height: size,
         borderRadius: "50%",
         overflow: "hidden",
-        background: "var(--color-border)",
+        background: color,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -325,7 +333,7 @@ function ArtistImage({
           className="font-league-gothic"
           style={{
             fontSize: large ? vw(56) : vw(32),
-            color: "var(--color-muted-foreground)",
+            color: "white",
           }}
         >
           {name.charAt(0).toUpperCase()}
