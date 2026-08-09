@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { vw } from "@/lib/utils";
 import SkillsPhysics from "@/components/ui/reusable-ui/skills-physics";
+import LastfmStats from "@/components/ui/home-ui/LastfmStats";
 import VersionSwitcher from "@/components/ui/reusable-ui/version-switcher";
 
 const SKILLS = [
@@ -63,7 +64,24 @@ export default function HomePage() {
             <SkillsPhysics skills={SKILLS} />
           </div>
 
-          {/* Page 2 — Version Switcher */}
+          {/* Page 2 — Lastfm Stats */}
+          <div
+            style={{
+              width: "100%",
+              minWidth: "100%",
+              height: "100%",
+              scrollSnapAlign: "start",
+              display: "flex",
+              flexDirection: "column",
+              background: "transparent",
+              borderRadius: vw(12),
+              padding: vw(24),
+            }}
+          >
+            <LastfmStats />
+          </div>
+
+          {/* Page 3 — Version Switcher */}
           <div
             style={{
               width: "100%",
