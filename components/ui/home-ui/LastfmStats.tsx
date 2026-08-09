@@ -89,6 +89,9 @@ export default function LastfmStats() {
   const currentRef = useRef(currentIndex);
   currentRef.current = currentIndex;
 
+  // Scroll indicator
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -118,12 +121,15 @@ export default function LastfmStats() {
 
   return (
     <div
+      ref={scrollRef}
+      className="no-scrollbar"
       style={{
         display: "flex",
         flexDirection: "column",
         flex: "1 1 0",
         minHeight: 0,
         gap: vw(16),
+        overflowY: "auto",
       }}
     >
       {/* Heading */}
@@ -287,6 +293,31 @@ export default function LastfmStats() {
           </div>
         </div>
       )}
+
+      {/* Scroll indicator — always visible */}
+      <div
+        style={{
+          position: "sticky",
+          bottom: 0,
+          display: "flex",
+          justifyContent: "center",
+          padding: vw(32),
+          paddingBottom: vw(32),
+          background: "linear-gradient(transparent, var(--color-card, #fff) 60%)",
+          pointerEvents: "none",
+          flexShrink: 0,
+          marginTop: "auto",
+        }}
+      >
+        <span
+          className="font-rajdhani text-muted-foreground"
+          style={{ fontSize: vw(32), position: "relative", top: 20 }}
+        >
+          {artists.length > 0 && currentIndex < artists.length - 1
+            ? "-- Scroll for more --"
+            : "— End —"}
+        </span>
+      </div>
     </div>
   );
 }
@@ -316,6 +347,7 @@ function ArtistImage({
         borderRadius: "50%",
         overflow: "hidden",
         background: color,
+        filter: `drop-shadow(0 ${vw(15)} ${vw(4)} rgba(0,0,0,0.5))`,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

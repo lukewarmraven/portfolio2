@@ -49,6 +49,7 @@ export default function VersionSwitcher({ hovered, onHoverChange }: VersionSwitc
             background: "#EC1D39",
             transition: popTransition,
             transform: hovered === 1 ? "translateY(-16px)" : "translateY(0)",
+            filter: `drop-shadow(0 ${vw(15)} ${vw(4)} rgba(0,0,0,0.5))`,
           }}
         />
       </a>
@@ -72,6 +73,7 @@ export default function VersionSwitcher({ hovered, onHoverChange }: VersionSwitc
             width: vw(320),
             height: vw(320),
             background: "black",
+            filter: `drop-shadow(0 ${vw(15)} ${vw(4)} rgba(0,0,0,0.5))`,
             transition: popTransition,
             transform: hovered === 2 ? "translateY(-16px)" : "translateY(0)",
           }}
