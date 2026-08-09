@@ -137,8 +137,13 @@ export default function LastfmStats() {
         className="font-rajdhani font-bold m-0 uppercase"
         style={{ fontSize: vw(32), textAlign: "center" }}
       >
+        <span className="text-[#D51007]">
+
+        LastFM {" "}
+        </span>
         Listening Stats
       </h2>
+      
 
       {/* Time-range pills */}
       <div

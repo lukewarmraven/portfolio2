@@ -61,13 +61,13 @@ function HomeContent() {
     close(); // dismiss expanded view if open
     scrollingRef.current = true;
     setActive(id);
-    // Wait for React to re-render sections into DOM before scrolling
-    requestAnimationFrame(() => {
+    // Wait for React to commit the close + section visibility before scrolling
+    setTimeout(() => {
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    });
+    }, 100);
     setTimeout(() => {
       scrollingRef.current = false;
-    }, 800);
+    }, 900);
   }, [close]);
 
   useEffect(() => {
