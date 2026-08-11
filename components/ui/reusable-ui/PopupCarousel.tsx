@@ -9,6 +9,7 @@ export interface PopupCarouselItem {
   title: string;
   description: string;
   body?: string;
+  images?: string[];
 }
 
 interface PopupCarouselProps {

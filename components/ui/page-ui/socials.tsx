@@ -2,42 +2,20 @@
 
 import { useState } from "react";
 import { vw } from "@/lib/utils";
-
-const socials = [
-  {
-    name: "Linkedin",
-    url: "https://www.linkedin.com/in/quintoravenluke/",
-    logo: "",
-  },
-  {
-    name: "Github",
-    url: "https://github.com/lukewarmraven",
-    logo: "",
-  },
-  {
-    name: "Facebook",
-    url: "https://www.facebook.com/ravenluke.quinto",
-    logo: "",
-  },
-  {
-    name: "Email",
-    url: "quintoravenluke@gmail.com",
-    logo: "",
-  },
-];
+import { SOCIALS, UI_STRINGS } from "@/lib/content";
 
 export default function Socials() {
   const [copied, setCopied] = useState(false);
 
   const copyEmail = () => {
-    navigator.clipboard.writeText("quintoravenluke@gmail.com");
+    navigator.clipboard.writeText(SOCIALS[3].url);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
 
   return (
     <div className="flex justify-between items-center">
-      {socials.map((s) =>
+      {SOCIALS.map((s) =>
         s.name === "Email" ? (
           <button
             key={s.name}
@@ -63,7 +41,7 @@ export default function Socials() {
                 transition: "transform 0.5s ease, opacity 0.5s ease",
               }}
             >
-              Copied!
+              {UI_STRINGS.copied}
             </span>
           </button>
         ) : (

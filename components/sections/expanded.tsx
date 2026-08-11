@@ -10,19 +10,12 @@ import {
 import { createPortal } from "react-dom";
 import { vw } from "@/lib/utils";
 import ImageCarousel from "@/components/ui/reusable-ui/ImageCarousel";
-
-const DEMO_IMAGES = [
-  "/assets/projects/resbac/web0.png",
-  "/assets/projects/resbac/web1.png",
-  "/assets/projects/resbac/web2.png",
-  "/assets/projects/resbac/web3.png",
-  "/assets/projects/resbac/mob0.jpg",
-  "/assets/projects/resbac/mob1.jpg",
-];
+import { DEMO_IMAGES, UI_STRINGS, EASE } from "@/lib/content";
 
 export interface ExpandedProps {
   title: string;
   body: string;
+  images?: string[];
   onBack?: () => void;
   children?: ReactNode;
   className?: string;
@@ -31,18 +24,18 @@ export interface ExpandedProps {
 /*  Shared DNA with CallingCard                                     */
 
 const FLIP_MS = 400;
-const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
 
 /*  Component                                                        */
 
 export default function Expanded({
   title,
   body,
+  images: imagesProp,
   onBack,
   children,
   className,
 }: ExpandedProps) {
-  const images = DEMO_IMAGES;
+  const images = imagesProp ?? DEMO_IMAGES;
 
   /* ── Modal state ── */
   const [modalIndex, setModalIndex] = useState<number | null>(null);
@@ -195,7 +188,7 @@ export default function Expanded({
               className="font-rajdhani text-muted-foreground text-center"
               style={{ fontSize: vw(32) }}
             >
-              ← Back
+              {UI_STRINGS.back}
             </button>
           )}
         </div>

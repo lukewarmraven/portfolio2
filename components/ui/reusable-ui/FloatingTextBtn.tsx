@@ -7,6 +7,8 @@ export interface FloatingTextBtnItem {
   number: string;
   title: string;
   body?: string;
+  image?: string;
+  images?: string[];
 }
 
 interface FloatingTextBtnProps {

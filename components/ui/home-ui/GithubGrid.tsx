@@ -30,18 +30,17 @@ interface GithubData {
   };
 }
 
+import { GITHUB_CONTRIBUTION_LEVELS, GITHUB_DAY_LABELS, GITHUB_MONTHS, STAR_ASSET, AVATAR_COLORS, UI_STRINGS } from "@/lib/content";
+
 const CELL = vw(24);
 const GAP = vw(6);
-const LEVELS = ["var(--color-border)", "#9be9a8", "#40c463", "#30a14e", "#216e39"];
-const DAY_LABELS = ["", "Mon", "", "Wed", "", "Fri", ""];
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 function GitHubGreen(count: number): string {
-  if (count === 0) return LEVELS[0];
-  if (count <= 2) return LEVELS[1];
-  if (count <= 5) return LEVELS[2];
-  if (count <= 10) return LEVELS[3];
-  return LEVELS[4];
+  if (count === 0) return GITHUB_CONTRIBUTION_LEVELS[0];
+  if (count <= 2) return GITHUB_CONTRIBUTION_LEVELS[1];
+  if (count <= 5) return GITHUB_CONTRIBUTION_LEVELS[2];
+  if (count <= 10) return GITHUB_CONTRIBUTION_LEVELS[3];
+  return GITHUB_CONTRIBUTION_LEVELS[4];
 }
 
 export default function GithubGrid() {
@@ -184,7 +183,7 @@ export default function GithubGrid() {
         <div style={{ display: "flex", flexDirection: "row", gap: GAP, justifyContent: "center" }}>
           {/* Day labels column */}
           <div style={{ display: "flex", flexDirection: "column", gap: GAP, flexShrink: 0, marginRight: vw(4), paddingTop: vw(24) }}>
-            {DAY_LABELS.map((label, di) => (
+            {GITHUB_DAY_LABELS.map((label, di) => (
               <div
                 key={di}
                 style={{
@@ -247,7 +246,7 @@ export default function GithubGrid() {
                       transition: "opacity 0.35s ease",
                     }}
                   >
-                    {MONTHS[currMonth]}
+                    {GITHUB_MONTHS[currMonth]}
                   </span>
                 )}
                 {/* Day cells */}
@@ -325,7 +324,7 @@ export default function GithubGrid() {
               )}
             </div>
             <span className="font-rajdhani" style={{ fontSize: vw(32), flexShrink: 0, display: "flex", alignItems: "center", gap: vw(4) }}>
-              <img src="/assets/misc/star.png" alt="" style={{ width: vw(24), height: vw(24) }} />
+              <img src={STAR_ASSET} alt="" style={{ width: vw(24), height: vw(24) }} />
               {repo.stargazerCount}
             </span>
           </a>

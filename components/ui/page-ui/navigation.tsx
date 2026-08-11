@@ -1,14 +1,7 @@
 import { vw } from "@/lib/utils";
+import { NAV_SECTIONS, type SectionId } from "@/lib/content";
 
-export const sections = [
-  { id: "home", label: "01 HOME" },
-  { id: "experience", label: "02 EXPERIENCE" },
-  { id: "projects", label: "03 PROJECTS" },
-  { id: "seminars", label: "04 SEMINARS & EVENTS" },
-  { id: "contact", label: "05 CONTACT ME" },
-] as const;
-
-export type SectionId = (typeof sections)[number]["id"];
+export type { SectionId };
 
 interface NavSectionsProps {
   active: SectionId;
@@ -18,7 +11,7 @@ interface NavSectionsProps {
 export default function NavSections({ active, onSelect }: NavSectionsProps) {
   return (
     <nav>
-      {sections.map((item) => (
+      {NAV_SECTIONS.map((item) => (
         <a
           className={`font-rajdhani no-underline cursor-pointer transition-all duration-300 ease-in-out ${
             active === item.id ? "text-black font-semibold" : "text-black font-normal"

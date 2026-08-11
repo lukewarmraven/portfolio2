@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { vw } from "@/lib/utils";
+import { LASTFM_PERIODS, AVATAR_COLORS, EASE, UI_STRINGS } from "@/lib/content";
 
 type Period = "7day" | "1month" | "6month" | "12month" | "overall";
 
@@ -11,21 +12,6 @@ interface Artist {
   url: string;
   image: { "#text": string; size: string }[];
 }
-
-const PERIODS: { value: Period; label: string }[] = [
-  { value: "7day", label: "7 days" },
-  { value: "1month", label: "1 mo" },
-  { value: "6month", label: "6 mo" },
-  { value: "12month", label: "1 yr" },
-  { value: "overall", label: "all time" },
-];
-
-const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
-
-const AVATAR_COLORS = [
-  "#DC2626", "#0891B2", "#F59E0B", "#7C3AED",
-  "#DB2777", "#2563EB", "#EA580C", "#65A30D",
-];
 
 // Module-level cache — survives remounts, cleared on full reload
 const cache: Record<string, Artist[]> = {};
@@ -154,7 +140,7 @@ export default function LastfmStats() {
           flexWrap: "wrap",
         }}
       >
-        {PERIODS.map((p) => (
+        {LASTFM_PERIODS.map((p) => (
           <button
             key={p.value}
             onClick={() => setPeriod(p.value)}
@@ -179,7 +165,7 @@ export default function LastfmStats() {
       {loading ? (
         <div style={{ textAlign: "center", padding: vw(48) }}>
           <span className="font-rajdhani text-muted-foreground" style={{ fontSize: vw(32) }}>
-            Loading...
+            {UI_STRINGS.loading}
           </span>
         </div>
       ) : (

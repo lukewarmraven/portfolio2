@@ -6,17 +6,7 @@ import SkillsPhysics from "@/components/ui/reusable-ui/skills-physics";
 import LastfmStats from "@/components/ui/home-ui/LastfmStats";
 import GithubGrid from "@/components/ui/home-ui/GithubGrid";
 import VersionSwitcher from "@/components/ui/home-ui/version-switcher";
-
-const SKILLS = [
-  "React",
-  "Next.js",
-  "TypeScript",
-  "Node.js",
-  "PostgreSQL",
-  "Tailwind",
-  "Figma",
-  "AWS",
-];
+import { SKILLS, UI_STRINGS } from "@/lib/content";
 
 export default function HomePage() {
   const [hoveredVersion, setHoveredVersion] = useState<number | null>(null);
@@ -214,7 +204,7 @@ export default function HomePage() {
                     lineHeight: 1,
                   }}
                 >
-                  Visit other versions
+                  {UI_STRINGS.visitOtherVersions}
                 </h1>
 
                 <div style={{ textAlign: "center", lineHeight: 1 }}>
@@ -222,12 +212,12 @@ export default function HomePage() {
                     className="font-rajdhani"
                     style={{
                       fontSize: vw(32),
-                      color: hoveredVersion === 1 ? "#EC1D39" : "inherit",
+                      color: hoveredVersion === 1 ? UI_STRINGS.version1Color : "inherit",
                       opacity: hoveredVersion ? 1 : 0,
                       transition: "opacity 0.3s ease",
                     }}
                   >
-                    {hoveredVersion === 1 ? "Version 1" : "Version 2"}
+                    {hoveredVersion === 1 ? UI_STRINGS.version1 : UI_STRINGS.version2}
                   </span>
                   {hoveredVersion === 2 && (
                     <span
@@ -238,7 +228,7 @@ export default function HomePage() {
                         transition: "opacity 0.3s ease",
                       }}
                     >
-                      {" "}(current)
+                      {" "}({UI_STRINGS.current})
                     </span>
                   )}
                 </div>

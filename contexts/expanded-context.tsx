@@ -5,6 +5,7 @@ import { createContext, useContext, useState, useCallback, type ReactNode } from
 export interface ExpandedData {
   title: string;
   body: string;
+  images?: string[];
   sourceSection?: string;
 }
 

@@ -4,15 +4,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { vw, vh } from "@/lib/utils";
 import LeftMain from "@/components/ui/page-ui/left-main";
 import RightMain from "@/components/ui/page-ui/right-main";
-import NavSections, { sections, type SectionId } from "@/components/ui/page-ui/navigation";
-
-const SECTION_TITLES: Record<SectionId, string> = {
-  home: "Home",
-  experience: "Experience",
-  projects: "Projects",
-  seminars: "Seminars & Events",
-  contact: "Contact",
-};
+import NavSections, { type SectionId } from "@/components/ui/page-ui/navigation";
+import { PERSONAL, SECTION_TITLES, SECTIONS_ORDER, NAV_SECTIONS } from "@/lib/content";
 import HomePage from "@/components/sections/home";
 import Experience from "@/components/sections/experience";
 import Projects from "@/components/sections/projects";
@@ -31,12 +24,6 @@ const SECTION_COMPONENTS: Record<SectionId, () => React.JSX.Element> = {
   contact: Contact,
 };
 
-const leftContent = {
-  name: "Raven Luke Quinto",
-  title: "Full Stack Web Engineer",
-  course: "BSIT",
-  description: "I am Raven Luke E. Quinto, a 4th Year BSIT student and aspiring fullstack / software developer from Polytechnic University of the Philippines-Sta. Mesa, Manila.",
-};
 
 export default function Home() {
   return (
@@ -55,7 +42,6 @@ function HomeContent() {
   const expandedRef = useRef(expandedData);
   expandedRef.current = expandedData;
   const navInProgressRef = useRef(false);
-  const SECTIONS_ORDER = sections.map((s) => s.id);
 
   const scrollToSection = useCallback((id: SectionId) => {
     close(); // dismiss expanded view if open
@@ -182,7 +168,7 @@ function HomeContent() {
       { threshold: 0.5 }
     );
 
-    sections.forEach(({ id }) => {
+    NAV_SECTIONS.forEach(({ id }) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
@@ -200,10 +186,10 @@ function HomeContent() {
       <LeftMain>
         <section className="flex flex-col" style={{gap: vw(46)}}>
           <div>
-            <h1 className="font-league-gothic m-0 p-0 leading-[0.7]" style={{ fontSize: vw(110) }}>{leftContent.name.toUpperCase()}</h1>
-            <h3 className="font-league-gothic m-0" style={{ fontSize: vw(40) }}>{leftContent.title} | {leftContent.course}</h3>
+            <h1 className="font-league-gothic m-0 p-0 leading-[0.7]" style={{ fontSize: vw(110) }}>{PERSONAL.name.toUpperCase()}</h1>
+            <h3 className="font-league-gothic m-0" style={{ fontSize: vw(40) }}>{PERSONAL.title} | {PERSONAL.course}</h3>
           </div>
-          <p className="font-rajdhani" style={{ fontSize: vw(32) }}>{leftContent.description}</p>
+          <p className="font-rajdhani" style={{ fontSize: vw(32) }}>{PERSONAL.description}</p>
 
           <NavSections active={active} onSelect={scrollToSection} />
           <Socials/>
@@ -254,7 +240,7 @@ function RightContent() {
     <>
       {/* Sections — always mounted so DOM IDs exist for scrollIntoView */}
       <div style={{ display: expandedData ? "none" : "contents" }}>
-        {sections.map(({ id }) => {
+        {NAV_SECTIONS.map(({ id }) => {
           const Section = SECTION_COMPONENTS[id];
           return (
             <div key={id} id={id} style={{ height: "100%", scrollSnapAlign: "start", paddingTop: vh(300), paddingBottom: vh(300), boxSizing: "border-box" }}>
@@ -270,6 +256,7 @@ function RightContent() {
           <Expanded
             title={expandedData.title}
             body={expandedData.body}
+            images={expandedData.images}
             onBack={handleBack}
           />
         </div>
