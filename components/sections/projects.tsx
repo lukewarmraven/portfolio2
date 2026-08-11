@@ -78,7 +78,7 @@ export default function Projects() {
         items={PROJECTS}
         currentIndex={currentIndex}
         onCurrentChange={setCurrentIndex}
-        onItemClick={(item) => expand({ title: item.title, body: item.body ?? UI_STRINGS.noDetails, images: item.images, sourceSection: "projects" })}
+        onItemClick={(item) => expand({ title: item.title, body: item.body ?? UI_STRINGS.noDetails, images: item.images, link: item.link, sourceSection: "projects" })}
       />
     </section>
   );

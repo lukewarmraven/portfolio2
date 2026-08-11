@@ -16,6 +16,7 @@ export interface ExpandedProps {
   title: string;
   body: string;
   images?: string[];
+  link?: string;
   onBack?: () => void;
   children?: ReactNode;
   className?: string;
@@ -31,6 +32,7 @@ export default function Expanded({
   title,
   body,
   images: imagesProp,
+  link,
   onBack,
   children,
   className,
@@ -134,15 +136,50 @@ export default function Expanded({
       style={{ height: "100%", gap: vw(32) }}
     >
       {/* ── Title ── */}
-      <h1
+      <div
         className="text-center font-rajdhani m-0 uppercase"
         style={{
           fontSize: vw(32),
           fontWeight: "bold",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: vw(8),
         }}
       >
-        {title}
-      </h1>
+        {link ? (
+          <a
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              cursor: "pointer",
+              textDecoration: "none",
+              color: "inherit",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              transition: "opacity 0.2s ease",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+          >
+            {title}
+            <img
+              src="/assets/misc/redirect.png"
+              alt="Redirect icon"
+              style={{
+                width: vw(24),
+                height: vw(24),
+                marginLeft: vw(8),
+                opacity: 1,
+              }}
+            />
+          </a>
+        ) : (
+          <span>{title}</span>
+        )}
+      </div>
 
       {/* ── Scrollable content ── */}
       <div

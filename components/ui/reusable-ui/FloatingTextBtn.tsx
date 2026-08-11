@@ -210,7 +210,7 @@ export default function FloatingTextBtn({
             >
               {/* Initial offset — scatters items before float begins */}
               <span
-                className="flex flex-col items-center"
+                className="flex flex-col items-stretch"
                 style={{ transform: `translate(${vw(init.tx)}, ${vw(init.ty)})` }}
               >
               {/* Float layer — always running so pop starts from float position */}
@@ -236,10 +236,11 @@ export default function FloatingTextBtn({
                     {item.number}
                   </span>
                   <span
-                    className="font-rajdhani font-bold text-muted-foreground whitespace-nowrap"
+                    className="font-rajdhani font-bold text-black text-center leading-[1.2]"
                     style={{
                       fontSize: vw(24),
                       filter: `drop-shadow(0 ${vw(15)} ${vw(4)} rgba(0,0,0,0.5))`,
+                      overflowWrap: "break-word"
                     }}
                   >
                     {item.title}

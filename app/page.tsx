@@ -257,6 +257,7 @@ function RightContent() {
             title={expandedData.title}
             body={expandedData.body}
             images={expandedData.images}
+            link={expandedData.link}
             onBack={handleBack}
           />
         </div>

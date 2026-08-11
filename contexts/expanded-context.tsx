@@ -7,6 +7,7 @@ export interface ExpandedData {
   body: string;
   images?: string[];
   sourceSection?: string;
+  link?: string;
 }
 
 interface ExpandedContextValue {
