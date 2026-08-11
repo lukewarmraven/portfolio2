@@ -159,20 +159,36 @@ export default function Expanded({
               display: "flex",
               alignItems: "center",
               gap: "8px",
-              transition: "opacity 0.2s ease",
+              transition: "all 0.2s ease",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = "0.9";
+              e.currentTarget.style.textDecoration = "underline";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = "1";
+              e.currentTarget.style.textDecoration = "none";
+            }}
           >
             {title}
             <img
               src="/assets/misc/redirect.png"
               alt="Redirect icon"
               style={{
-                width: vw(24),
-                height: vw(24),
-                marginLeft: vw(8),
-                opacity: 1,
+                width: "40px",
+                height: "40px",
+                marginLeft: "12px",
+                opacity: 0.9,
+                filter: "brightness(0) invert(1)",
+                transition: "all 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = "1";
+                e.currentTarget.style.transform = "scale(1.1)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = "0.9";
+                e.currentTarget.style.transform = "scale(1)";
               }}
             />
           </a>

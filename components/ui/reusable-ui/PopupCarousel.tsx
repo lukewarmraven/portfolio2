@@ -10,6 +10,7 @@ export interface PopupCarouselItem {
   description: string;
   body?: string;
   images?: string[];
+  link?: string;
 }
 
 interface PopupCarouselProps {
