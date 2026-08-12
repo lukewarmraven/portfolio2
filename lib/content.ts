@@ -51,9 +51,9 @@ export const SKILLS: string[] = [
 
   // ── Frameworks & Libraries ─────────────────────────
   "React",
-  "React Native",
   "Next.js",
   "Express.js",
+  "React Native",
   "Expo",
   "Tailwind CSS",
   "ASP.NET",
@@ -67,7 +67,6 @@ export const SKILLS: string[] = [
   "AWS Lambda",
   "AWS Route 53",
   "Git",
-  "BitBucket",
   "Docker",
 
   // ── Design & Tools ─────────────────────────────────
@@ -81,19 +80,21 @@ export const EXPERIENCE_CARDS = [
   {
     category: "experience",
     title: "Centhesys at Creciendo Philippines Inc.",
-    description: "EXP · Full Stack Web Developer — Mar to Jun 2026",
+    description: "EXP · Intern · Full Stack Web Developer — Mar to Jun 2026",
     content:
       "Designed and implemented a role-based access control (RBAC) system across the entire HRIS platform, building the role and module permission architecture, dynamic route protection, and enforcement logic used by all application modules. Developed a full payroll computation engine using a calendar-based approach handling premium pay, statutory deductions, withholding tax, and automated cron-based payslip generation. Built full-stack features from database schema and REST API design to responsive frontend interfaces across employee management, document handling with AWS S3, attendance tracking, and analytics dashboards. Improved platform performance by implementing lazy loading for cloud storage requests, centralizing global state management, and building reusable component architecture.",
-    footer: "React · Next.js · TypeScript · AWS S3 · Supabase",
+    footer:
+      "JavaScript · Next.js · Express.js · MongoDB · AWS S3, EC2 · Bitbucket",
   },
   {
     category: "experience",
     title: "RESBAC Capstone Project",
     description:
-      "EXP · Full Stack Web Developer & Project Manager — Jul to Dec 2025",
+      "EXP · Member · Full Stack Web Developer & Project Manager — Jul to Dec 2025",
     content:
       "Conceptualized and developed a multi-platform disaster response system enabling barangays to map vulnerable populations and prioritize rescue operations in high-risk areas. Designed and implemented the Supabase (PostgreSQL) backend and database architecture supporting citizen profiles, vulnerability information, and barangay admin rescue data. Implemented frontend data pipelines for fetching, cleaning, and validating datasets used by the interface and received by machine learning APIs. Deployed the website using AWS S3, CloudFront, Route 53, and GoDaddy, and built the mobile application using React Native. Built and deployed ML servers (KMeans Clustering and XGBoost) using AWS Lambda and Docker. Led weekly sprint meetings, managed task allocations, and ensured timely accomplishments with consistent team communication.",
-    footer: "React · React Native · Supabase · AWS · Docker · Python",
+    footer:
+      "React · React Native · Supabase · AWS S3, CF, R53, Lambda · Python",
   },
   {
     category: "experience",
@@ -101,15 +102,7 @@ export const EXPERIENCE_CARDS = [
     description: "EXP · Full Stack Web Developer & Project Manager — 2026",
     content:
       "Designed and implemented the backend and database architecture in Supabase for event and audience ticketing management. Built a dynamic form builder that allows customizable ticketing form creation for any event, behaving similarly to Google Forms. Created frontend skeletons to establish core system workflows prior to UI/UX styling. Led weekly sprint meetings, task allocations, and revision review of accomplished features, applying Agile principles in practice.",
-    footer: "React · Supabase · TypeScript · PostgreSQL",
-  },
-  {
-    category: "experience",
-    title: "CNCP Routing Success Webinar",
-    description: "EXP · Event Host — Mar 2025",
-    content:
-      "Hosted an online webinar for the CNCP Relations Department focused on building strategic connections and enhancing teamwork through insightful discussions.",
-    footer: "Event Hosting · Public Speaking",
+    footer: "Typescript · Next.js · Express.js · MongoDB",
   },
   {
     category: "education",
@@ -133,8 +126,8 @@ export const EXPERIENCE_CARDS = [
 
 export const PROJECTS = [
   {
-    title: "Resbac — Disaster Response Platform",
-    description: "Multi-platform rescue management system",
+    title: "RESBAC — Capstone Research Project",
+    description: "Multi-platform disaster response system",
     image: "/assets/projects/resbac/mob0.jpg",
     images: [
       "/assets/projects/resbac/mob0.jpg",
@@ -154,7 +147,7 @@ export const PROJECTS = [
       "/assets/projects/resbac/web7.png",
       "/assets/projects/resbac/web8.png",
     ],
-    body: "Conceptualized and developed a multi-platform disaster response system enabling barangays to map vulnerable populations and prioritize rescue operations in high-risk areas, providing data-driven decision support for barangay rescuers. Designed and implemented the Supabase (PostgreSQL) backend and database architecture supporting citizen profiles, vulnerability information, and barangay admin rescue data. Implemented frontend data pipelines for fetching, cleaning, and validating datasets used by the interface and received by machine learning APIs. Deployed the website using AWS S3, CloudFront, Route 53, and GoDaddy, and built the mobile application using React Native. Built and deployed ML servers (KMeans Clustering and XGBoost) using AWS Lambda and Docker for containerization.",
+    body: "RESBAC standing for Rescue and Emergency Support for Barangay At-Risk Citizens. Conceptualized and developed a multi-platform disaster response system enabling barangays to map vulnerable populations and prioritize rescue operations in high-risk areas, providing data-driven decision support for barangay rescuers. Designed and implemented the Supabase (PostgreSQL) backend and database architecture supporting citizen profiles, vulnerability information, and barangay admin rescue data. Implemented frontend data pipelines for fetching, cleaning, and validating datasets used by the interface and received by machine learning APIs. Deployed the website using AWS S3, CloudFront, Route 53, and GoDaddy, and built the mobile application using React Native. Built and deployed ML servers (KMeans Clustering and XGBoost) using AWS Lambda and Docker for containerization.",
     link: "https://resbac-admin.online/login",
   },
   {
@@ -171,10 +164,14 @@ export const PROJECTS = [
     body: "Designed and implemented the backend and database architecture in Supabase for event and audience ticketing management. Built a dynamic form builder that allows customizable ticketing form creation for any event, behaving similarly to Google Forms. Created frontend skeletons to establish core system workflows prior to UI/UX styling. Led weekly sprint meetings, task allocations, and revision review of accomplished features, applying Agile principles in practice.",
   },
   {
-    title: "Centhesys — HRIS Platform",
-    description: "Role-based HRIS with payroll engine",
+    title: "Centhesys V1 — HRIS Platform",
+    description: "SaaS HRIS Platform",
     image: "/assets/projects/centhesys/centhesys0.png",
-    images: ["/assets/projects/centhesys/centhesys0.png"],
+    images: [
+      "/assets/projects/centhesys/centhesys0.png",
+      "/assets/projects/centhesys/centhesys1.jpg",
+      "/assets/projects/centhesys/centhesys2.jpg",
+    ],
     body: "Designed and implemented a role-based access control (RBAC) system across the entire HRIS platform, building the role and module permission architecture, dynamic route protection, and enforcement logic used by all application modules. Developed a full payroll computation engine using a calendar-based approach handling premium pay, statutory deductions, withholding tax, and automated cron-based payslip generation. Built full-stack features from database schema and REST API design to responsive frontend interfaces across employee management, document handling with AWS S3, attendance tracking, and analytics dashboards. Improved platform performance by implementing lazy loading for cloud storage requests, centralizing global state management, and building reusable component architecture.",
     link: "http://bpm.centhesys.com",
   },
