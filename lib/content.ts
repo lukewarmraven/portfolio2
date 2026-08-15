@@ -52,20 +52,23 @@ export const SKILLS: string[] = [
   // ── Frameworks & Libraries ─────────────────────────
   "React",
   "Next.js",
+  "Tailwind CSS",
   "Express.js",
   "React Native",
+  "Angular",
   "Expo",
-  "Tailwind CSS",
   "ASP.NET",
 
   // ── Backend & Cloud ────────────────────────────────
   "MongoDB",
   "Supabase",
   "PostgreSQL",
+  "JSON",
   "AWS S3",
   "AWS CloudFront",
   "AWS Lambda",
   "AWS Route 53",
+  "Azure DevOps",
   "Git",
   "Docker",
 
