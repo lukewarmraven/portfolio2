@@ -1,0 +1,36 @@
+{
+  "name": "@lukewarmraven/figma-scale",
+  "version": "0.1.0",
+  "description": "Figma px → responsive CSS calc utility. Maps design canvas dimensions to live viewport scale via CSS custom properties.",
+  "license": "MIT",
+  "author": "Raven Luke Quinto",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean"
+  },
+  "keywords": [
+    "figma",
+    "responsive",
+    "viewport",
+    "css-variables",
+    "design-tokens",
+    "scale"
+  ],
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  }
+}
