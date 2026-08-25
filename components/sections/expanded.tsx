@@ -161,8 +161,16 @@ export default function Expanded({
               gap: "8px",
               transition: "opacity 0.2s ease",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = "0.9";
+              e.currentTarget.style.textDecoration = "underline";
+              e.currentTarget.style.textUnderlineOffset = "2px";
+              e.currentTarget.style.textDecorationThickness = "1px";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = "1";
+              e.currentTarget.style.textDecoration = "none";
+            }}
           >
             {title}
             <img
