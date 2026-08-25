@@ -154,6 +154,34 @@ export const PROJECTS = [
     link: "https://resbac-admin.online/login",
   },
   {
+    title: "Centhesys V1 — HRIS Platform",
+    description: "SaaS HRIS Platform",
+    image: "/assets/projects/centhesys/centhesys0.png",
+    images: [
+      "/assets/projects/centhesys/centhesys0.png",
+      "/assets/projects/centhesys/centhesys1.jpg",
+      "/assets/projects/centhesys/centhesys2.jpg",
+    ],
+    body: "Designed and implemented a role-based access control (RBAC) system across the entire HRIS platform, building the role and module permission architecture, dynamic route protection, and enforcement logic used by all application modules. Developed a full payroll computation engine using a calendar-based approach handling premium pay, statutory deductions, withholding tax, and automated cron-based payslip generation. Built full-stack features from database schema and REST API design to responsive frontend interfaces across employee management, document handling with AWS S3, attendance tracking, and analytics dashboards. Improved platform performance by implementing lazy loading for cloud storage requests, centralizing global state management, and building reusable component architecture.",
+    link: "http://bpm.centhesys.com",
+  },
+  {
+    title: "PigletGuard Mobile Website",
+    description: "PigletGuard product landing page & demo booking",
+    image: "/assets/projects/pigletguard/piglet0.png",
+    images: [
+      "/assets/projects/pigletguard/piglet0.png",
+      "/assets/projects/pigletguard/piglet1.png",
+      "/assets/projects/pigletguard/piglet2.png",
+      "/assets/projects/pigletguard/piglet3.png",
+      "/assets/projects/pigletguard/piglet4.png",
+      "/assets/projects/pigletguard/piglet5.png",
+      "/assets/projects/pigletguard/piglet6.png",
+    ],
+    body: "Designed and built the marketing and showcase website for PigletGuard, a pig-monitoring solution, using Next.js, TypeScript, and Tailwind CSS. Built a responsive single-page layout with dedicated Home, Solutions, Why, About Us, Pricing, and Contact sections, complete with custom SVG icon assets and PigletGuard branding. Implemented a Book a Demo flow with a booking form, pricing option selection, and a confirmation modal, backed by Supabase for storing demo requests. Added dynamic page-title management and a redesigned footer with social media links.",
+    link: "https://pigwise.vercel.app/",
+  },
+  {
     title: "PUPSLP — Theater Ticketing System",
     description: "Event & audience ticketing management",
     image: "/assets/projects/pupslp/slp1.png",
@@ -165,18 +193,6 @@ export const PROJECTS = [
       "/assets/projects/pupslp/slp5.png",
     ],
     body: "Designed and implemented the backend and database architecture in Supabase for event and audience ticketing management. Built a dynamic form builder that allows customizable ticketing form creation for any event, behaving similarly to Google Forms. Created frontend skeletons to establish core system workflows prior to UI/UX styling. Led weekly sprint meetings, task allocations, and revision review of accomplished features, applying Agile principles in practice.",
-  },
-  {
-    title: "Centhesys V1 — HRIS Platform",
-    description: "SaaS HRIS Platform",
-    image: "/assets/projects/centhesys/centhesys0.png",
-    images: [
-      "/assets/projects/centhesys/centhesys0.png",
-      "/assets/projects/centhesys/centhesys1.jpg",
-      "/assets/projects/centhesys/centhesys2.jpg",
-    ],
-    body: "Designed and implemented a role-based access control (RBAC) system across the entire HRIS platform, building the role and module permission architecture, dynamic route protection, and enforcement logic used by all application modules. Developed a full payroll computation engine using a calendar-based approach handling premium pay, statutory deductions, withholding tax, and automated cron-based payslip generation. Built full-stack features from database schema and REST API design to responsive frontend interfaces across employee management, document handling with AWS S3, attendance tracking, and analytics dashboards. Improved platform performance by implementing lazy loading for cloud storage requests, centralizing global state management, and building reusable component architecture.",
-    link: "http://bpm.centhesys.com",
   },
 ];
 
