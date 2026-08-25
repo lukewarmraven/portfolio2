@@ -8,10 +8,10 @@
 export const PERSONAL = {
   name: "Raven Luke Quinto",
   fullName: "Raven Luke E. Quinto",
-  title: "Full Stack Web Engineer",
+  title: "Full Stack Web Developer",
   course: "BSIT",
   description:
-    "I am Raven Luke E. Quinto, a 4th Year BSIT student and aspiring fullstack / software developer from Polytechnic University of the Philippines-Sta. Mesa, Manila.",
+    "I am Raven Luke E. Quinto, a Full Stack Web Developer and a recent BSIT graduate from Polytechnic University of the Philippines-Sta. Mesa, Manila.",
 } as const;
 
 // ── Navigation / Sections ──────────────────────────────────────
